@@ -69,13 +69,17 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 
 .form-card{background:var(–card);border:1px solid var(–border);border-radius:var(–r);padding:20px;margin-bottom:16px}
 .form-card h3{font-family:‘Playfair Display’,serif;font-weight:400;font-size:17px;color:var(–txt2);margin-bottom:18px}
+
 .ent-wrap{margin-top:20px}
 .ent-wrap h4{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(–txt3);margin-bottom:12px}
-.ent-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px;align-items:end}
-@media(max-width:480px){.ent-row{grid-template-columns:1fr 1fr}}
-.rm-btn{background:transparent;border:1px solid var(–border2);color:var(–txt2);font-family:‘JetBrains Mono’,monospace;font-size:12px;padding:9px 12px;border-radius:var(–rsm);cursor:pointer;transition:all .2s}
+
+/* Entity row: dropdown + amount + remove */
+.ent-row{display:grid;grid-template-columns:1fr 140px auto;gap:8px;margin-bottom:8px;align-items:end}
+@media(max-width:500px){.ent-row{grid-template-columns:1fr 110px auto}}
+
+.rm-btn{background:transparent;border:1px solid var(–border2);color:var(–txt2);font-family:‘JetBrains Mono’,monospace;font-size:12px;padding:9px 12px;border-radius:var(–rsm);cursor:pointer;transition:all .2s;line-height:1}
 .rm-btn:hover{border-color:var(–red);color:var(–red)}
-.add-ent-btn{background:transparent;border:1px dashed var(–border2);color:var(–txt2);font-family:‘JetBrains Mono’,monospace;font-size:10px;letter-spacing:1px;padding:9px 14px;border-radius:var(–rsm);cursor:pointer;transition:all .2s;margin-top:4px;width:100%}
+.add-ent-btn{background:transparent;border:1px dashed var(–border2);color:var(–txt2);font-family:‘JetBrains Mono’,monospace;font-size:10px;letter-spacing:1px;padding:9px 14px;border-radius:var(–rsm);cursor:pointer;transition:all .2s;margin-top:6px;width:100%}
 .add-ent-btn:hover{border-color:var(–green);color:var(–green)}
 
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -87,6 +91,11 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .field select option{background:var(–surface)}
 .divider{height:1px;background:var(–border);margin:18px 0}
 
+/* Success banner */
+.success-banner{display:none;background:rgba(77,255,124,.08);border:1px solid rgba(77,255,124,.25);border-radius:var(–rsm);padding:14px 18px;margin-bottom:16px;font-size:12px;color:var(–green);letter-spacing:.5px;align-items:center;gap:10px}
+.success-banner.show{display:flex}
+.success-banner .ico{font-size:18px}
+
 .btn{padding:10px 18px;border-radius:var(–rsm);border:none;font-family:‘JetBrains Mono’,monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap}
 .btn-primary{background:var(–green);color:#080a09;font-weight:500}
 .btn-primary:hover{opacity:.85;transform:translateY(-1px)}
@@ -95,6 +104,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .btn-danger:hover{background:var(–red);color:#080a09}
 .btn-outline{padding:9px 16px;border-radius:var(–rsm);border:1px solid var(–border2);background:transparent;color:var(–txt2);font-family:‘JetBrains Mono’,monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
 .btn-outline:hover{border-color:var(–txt2);color:var(–txt1)}
+.btn-sm{padding:6px 12px;font-size:9px}
 
 .table-card{background:var(–card);border:1px solid var(–border);border-radius:var(–r);overflow:hidden;margin-bottom:16px}
 .table-card h3{font-family:‘Playfair Display’,serif;font-weight:400;font-size:17px;color:var(–txt2);padding:18px 20px 14px;border-bottom:1px solid var(–border)}
@@ -116,9 +126,21 @@ tr:hover td{background:#0f1210}
 .exp-btn:hover{color:var(–txt1)}
 .detail-row td{padding:0 14px 14px;background:#0d100d}
 .detail-row.hidden{display:none}
-.ent-item{display:flex;justify-content:space-between;font-size:11px;color:var(–txt2);padding:3px 0;border-bottom:1px solid #151915}
+.ent-item{display:flex;justify-content:space-between;font-size:11px;color:var(–txt2);padding:4px 0;border-bottom:1px solid #151915}
 .ent-item:last-child{border-bottom:none}
 .ent-item span:last-child{color:var(–txt1)}
+
+/* Entity manager panel */
+.ent-mgr{background:var(–card);border:1px solid var(–border);border-radius:var(–r);padding:20px;margin-bottom:16px}
+.ent-mgr h3{font-family:‘Playfair Display’,serif;font-weight:400;font-size:17px;color:var(–txt2);margin-bottom:6px}
+.ent-mgr p{font-size:11px;color:var(–txt2);line-height:1.7;margin-bottom:16px}
+.ent-mgr-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:32px}
+.ent-chip{display:flex;align-items:center;gap:6px;background:var(–surface);border:1px solid var(–border2);border-radius:100px;padding:5px 12px;font-size:11px;color:var(–txt1)}
+.ent-chip button{background:none;border:none;color:var(–txt3);cursor:pointer;font-size:13px;line-height:1;padding:0;transition:color .2s}
+.ent-chip button:hover{color:var(–red)}
+.ent-mgr-add{display:flex;gap:8px;align-items:center}
+.ent-mgr-add input{background:var(–surface);border:1px solid var(–border);color:var(–txt1);font-family:‘JetBrains Mono’,monospace;font-size:13px;padding:9px 12px;border-radius:var(–rsm);outline:none;flex:1;transition:border-color .2s}
+.ent-mgr-add input:focus{border-color:var(–green)}
 
 .set-card{background:var(–card);border:1px solid var(–border);border-radius:var(–r);padding:20px;margin-bottom:14px}
 .set-card h3{font-family:‘Playfair Display’,serif;font-weight:400;font-size:17px;color:var(–txt2);margin-bottom:10px}
@@ -176,7 +198,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <button class="tab" onclick="showSec('settings')">Opciones</button>
   </div>
 
-  <!-- OVERVIEW -->
+  <!-- ═══ OVERVIEW ═══ -->
 
   <div class="sec active" id="sec-overview">
     <div class="chart-card"><h3>Evolución total</h3><div class="chart-wrap"><canvas id="cTotal"></canvas></div></div>
@@ -191,52 +213,70 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     </div>
   </div>
 
-  <!-- REGISTRAR -->
+  <!-- ═══ REGISTRAR ═══ -->
 
   <div class="sec" id="sec-add">
-    <div class="form-card">
-      <h3>Registrar mes</h3>
-      <div class="form-row">
-        <div class="field">
-          <label>Mes</label>
-          <select id="inMonth">
-            <option value="01">Enero</option><option value="02">Febrero</option>
-            <option value="03">Marzo</option><option value="04">Abril</option>
-            <option value="05">Mayo</option><option value="06">Junio</option>
-            <option value="07">Julio</option><option value="08">Agosto</option>
-            <option value="09">Septiembre</option><option value="10">Octubre</option>
-            <option value="11">Noviembre</option><option value="12">Diciembre</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Año</label>
-          <input type="number" id="inYear" placeholder="2025" min="2000" max="2100">
-        </div>
-      </div>
-      <div class="divider"></div>
-      <div class="ent-wrap">
-        <h4>💚 Ahorros por entidad</h4>
-        <div id="savDiv"></div>
-        <button class="add-ent-btn" onclick="addRow('savDiv')">+ Añadir entidad de ahorro</button>
-      </div>
-      <div class="divider"></div>
-      <div class="ent-wrap">
-        <h4>🟡 Inversiones por entidad</h4>
-        <div id="invDiv"></div>
-        <button class="add-ent-btn" onclick="addRow('invDiv')">+ Añadir entidad de inversión</button>
-      </div>
-      <div style="margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-        <button class="btn btn-primary" onclick="addEntry()">＋ Guardar registro</button>
-        <span id="prevTxt" style="font-size:10px;color:var(--txt2)"></span>
-      </div>
+
+```
+<!-- Success banner -->
+<div class="success-banner" id="successBanner">
+  <span class="ico">✅</span>
+  <span id="successMsg">Registro añadido con éxito</span>
+</div>
+
+<div class="form-card">
+  <h3>Registrar mes</h3>
+  <div class="form-row">
+    <div class="field">
+      <label>Mes</label>
+      <select id="inMonth">
+        <option value="01">Enero</option><option value="02">Febrero</option>
+        <option value="03">Marzo</option><option value="04">Abril</option>
+        <option value="05">Mayo</option><option value="06">Junio</option>
+        <option value="07">Julio</option><option value="08">Agosto</option>
+        <option value="09">Septiembre</option><option value="10">Octubre</option>
+        <option value="11">Noviembre</option><option value="12">Diciembre</option>
+      </select>
     </div>
-    <div class="table-card">
-      <h3>Último registro guardado</h3>
-      <div id="lastPrev" class="empty"><span class="ico">📭</span>Sin registros aún</div>
+    <div class="field">
+      <label>Año</label>
+      <input type="number" id="inYear" placeholder="2025" min="2000" max="2100">
     </div>
   </div>
 
-  <!-- HISTORIAL -->
+  <div class="divider"></div>
+
+  <!-- AHORROS -->
+  <div class="ent-wrap">
+    <h4>💚 Ahorros por entidad</h4>
+    <div id="savDiv"></div>
+    <button class="add-ent-btn" onclick="addRow('savDiv')">+ Añadir entidad de ahorro</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- INVERSIONES -->
+  <div class="ent-wrap">
+    <h4>🟡 Inversiones por entidad</h4>
+    <div id="invDiv"></div>
+    <button class="add-ent-btn" onclick="addRow('invDiv')">+ Añadir entidad de inversión</button>
+  </div>
+
+  <div style="margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="addEntry()">＋ Guardar registro</button>
+    <span id="prevTxt" style="font-size:10px;color:var(--txt2)"></span>
+  </div>
+</div>
+
+<div class="table-card">
+  <h3>Último registro guardado</h3>
+  <div id="lastPrev" class="empty"><span class="ico">📭</span>Sin registros aún</div>
+</div>
+```
+
+  </div>
+
+  <!-- ═══ HISTORIAL ═══ -->
 
   <div class="sec" id="sec-history">
     <div class="table-card">
@@ -250,306 +290,546 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     </div>
   </div>
 
-  <!-- OPCIONES -->
+  <!-- ═══ OPCIONES ═══ -->
 
   <div class="sec" id="sec-settings">
-    <div class="set-card">
-      <h3>Exportar / Importar</h3>
-      <p>Exporta tus datos en JSON para hacer copias de seguridad o transferirlos a otro dispositivo.</p>
-      <div class="set-row">
-        <button class="btn-outline" onclick="exportData()">↓ Exportar JSON</button>
-        <button class="btn-outline" onclick="document.getElementById('impFile').click()">↑ Importar JSON</button>
-        <input type="file" id="impFile" accept=".json" style="display:none" onchange="importData(event)">
-      </div>
-    </div>
-    <div class="set-card">
-      <h3>Zona de peligro</h3>
-      <p>Elimina todos los datos guardados. Esta acción no se puede deshacer.</p>
-      <button class="btn btn-danger" onclick="clearAll()">✕ Borrar todos los datos</button>
-    </div>
-    <div class="set-card" style="background:transparent;border-color:transparent;text-align:center">
-      <p style="color:var(--txt3);font-size:10px;letter-spacing:1px;line-height:2">Los datos se guardan localmente en este dispositivo.<br>Ningún dato se envía a internet.</p>
-    </div>
+
+```
+<!-- Entity manager -->
+<div class="ent-mgr">
+  <h3>Gestionar entidades</h3>
+  <p>Añade o elimina los bancos y plataformas que aparecen en el desplegable al registrar.</p>
+  <div class="ent-mgr-list" id="entChips"></div>
+  <div class="ent-mgr-add">
+    <input type="text" id="newEntInput" placeholder="Nombre del banco o plataforma..." maxlength="40"
+      onkeydown="if(event.key==='Enter') addEntity()">
+    <button class="btn btn-primary btn-sm" onclick="addEntity()">Añadir</button>
+  </div>
+</div>
+
+<div class="set-card">
+  <h3>Exportar / Importar</h3>
+  <p>Exporta tus datos en JSON para hacer copias de seguridad o transferirlos a otro dispositivo.</p>
+  <div class="set-row">
+    <button class="btn-outline" onclick="exportData()">↓ Exportar JSON</button>
+    <button class="btn-outline" onclick="document.getElementById('impFile').click()">↑ Importar JSON</button>
+    <input type="file" id="impFile" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+</div>
+
+<div class="set-card">
+  <h3>Zona de peligro</h3>
+  <p>Elimina todos los datos guardados. Esta acción no se puede deshacer.</p>
+  <button class="btn btn-danger" onclick="clearAll()">✕ Borrar todos los datos</button>
+</div>
+
+<div class="set-card" style="background:transparent;border-color:transparent;text-align:center">
+  <p style="color:var(--txt3);font-size:10px;letter-spacing:1px;line-height:2">
+    Los datos se guardan localmente en este dispositivo.<br>Ningún dato se envía a internet.
+  </p>
+</div>
+```
+
   </div>
 
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-const SK = 'misFinanzas_v2';
-const CK = 'misFinanzas_cur';
-let entries = [], currency = '$', charts = {}, rowId = 0;
+// ── STORAGE KEYS ─────────────────────────────────────────────────────────
+const SK  = 'mf_entries_v3';
+const CK  = 'mf_currency';
+const EK  = 'mf_entities';
 
+// ── STATE ─────────────────────────────────────────────────────────────────
+let entries  = [];
+let currency = '$';
+let entities = ['BBVA', 'Santander', 'CaixaBank', 'ING', 'Revolut', 'N26', 'Indexa Capital', 'MyInvestor'];
+let charts   = {};
+let rowId    = 0;
+
+// ── INIT ──────────────────────────────────────────────────────────────────
 function init() {
-  try { const r = localStorage.getItem(SK); if(r) entries = JSON.parse(r); } catch(e) {}
+  // Load persisted data
+  try { const r = localStorage.getItem(SK); if (r) entries = JSON.parse(r); } catch(e) {}
+  try { const r = localStorage.getItem(EK); if (r) entities = JSON.parse(r); } catch(e) {}
   currency = localStorage.getItem(CK) || '$';
+
   document.getElementById('currSel').value = currency;
+
   const d = new Date();
-  document.getElementById('hdrDate').innerHTML = d.toLocaleDateString('es-ES',{weekday:'short',year:'numeric',month:'long',day:'numeric'}).replace(',','<br>');
+  document.getElementById('hdrDate').innerHTML =
+    d.toLocaleDateString('es-ES',{weekday:'short',year:'numeric',month:'long',day:'numeric'}).replace(',','<br>');
   document.getElementById('inMonth').value = String(d.getMonth()+1).padStart(2,'0');
-  document.getElementById('inYear').value = d.getFullYear();
+  document.getElementById('inYear').value  = d.getFullYear();
+
+  // Start with one empty row each
   addRow('savDiv');
   addRow('invDiv');
+
   renderAll();
+  renderEntityChips();
 }
 
-function save() { localStorage.setItem(SK, JSON.stringify(entries)); }
+// ── PERSIST ───────────────────────────────────────────────────────────────
+function saveEntries()  { localStorage.setItem(SK, JSON.stringify(entries)); }
+function saveEntities() { localStorage.setItem(EK, JSON.stringify(entities)); }
 function setCurrency(v) { currency = v; localStorage.setItem(CK, v); renderAll(); }
 
+// ── SECTIONS ──────────────────────────────────────────────────────────────
 function showSec(n) {
   document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('sec-'+n).classList.add('active');
-  document.querySelectorAll('.tab')[({overview:0,add:1,history:2,settings:3})[n]].classList.add('active');
+  document.querySelectorAll('.tab')[{overview:0,add:1,history:2,settings:3}[n]].classList.add('active');
   if (n === 'overview') renderCharts();
 }
 
-function addRow(containerId, name='', amount='') {
+// ── ENTITY MANAGER ────────────────────────────────────────────────────────
+function renderEntityChips() {
+  const el = document.getElementById('entChips');
+  if (!entities.length) {
+    el.innerHTML = '<span style="font-size:11px;color:var(--txt3)">Sin entidades — añade una abajo</span>';
+    return;
+  }
+  el.innerHTML = entities.map((e,i) => `
+    <div class="ent-chip">
+      <span>${e}</span>
+      <button onclick="removeEntity(${i})" title="Eliminar">✕</button>
+    </div>
+  `).join('');
+}
+
+function addEntity() {
+  const inp = document.getElementById('newEntInput');
+  const name = inp.value.trim();
+  if (!name) { toast('Escribe el nombre de la entidad', 1); return; }
+  if (entities.map(e=>e.toLowerCase()).includes(name.toLowerCase())) {
+    toast('Esa entidad ya existe', 1); return;
+  }
+  entities.push(name);
+  saveEntities();
+  inp.value = '';
+  renderEntityChips();
+  // Refresh all open dropdowns
+  document.querySelectorAll('.ent-select').forEach(sel => {
+    const cur = sel.value;
+    rebuildOptions(sel);
+    sel.value = cur;
+  });
+  toast('Entidad añadida ✓');
+}
+
+function removeEntity(idx) {
+  if (!confirm(`¿Eliminar "${entities[idx]}" de la lista?`)) return;
+  entities.splice(idx, 1);
+  saveEntities();
+  renderEntityChips();
+  document.querySelectorAll('.ent-select').forEach(sel => {
+    const cur = sel.value;
+    rebuildOptions(sel);
+    // If removed entity was selected, reset to first
+    if (!entities.includes(cur) && entities.length) sel.value = entities[0];
+  });
+}
+
+function rebuildOptions(sel) {
+  const cur = sel.value;
+  sel.innerHTML = entities.map(e =>
+    `<option value="${e}" ${e===cur?'selected':''}>${e}</option>`
+  ).join('');
+}
+
+// ── ENTRY ROWS ────────────────────────────────────────────────────────────
+function addRow(containerId) {
   const id = 'r' + rowId++;
-  const c = document.getElementById(containerId);
-  const d = document.createElement('div');
-  d.className = 'ent-row'; d.id = id;
+  const c  = document.getElementById(containerId);
+  const d  = document.createElement('div');
+  d.className = 'ent-row';
+  d.id = id;
+
+  const opts = entities.length
+    ? entities.map(e => `<option value="${e}">${e}</option>`).join('')
+    : '<option value="">— Sin entidades —</option>';
+
   d.innerHTML = `
-    <div class="field"><label>Entidad / Banco</label>
-      <input type="text" placeholder="Ej: BBVA, ING, Revolut..." value="${name}" oninput="updPrev()"></div>
-    <div class="field"><label>Importe</label>
-      <input type="number" placeholder="0.00" step="0.01" min="0" value="${amount}" oninput="updPrev()"></div>
-    <button class="rm-btn" onclick="rmRow('${id}')">✕</button>`;
+    <div class="field">
+      <label>Entidad</label>
+      <select class="ent-select" onchange="updPrev()">
+        ${opts}
+      </select>
+    </div>
+    <div class="field">
+      <label>Importe</label>
+      <input type="number" placeholder="0.00" step="0.01" min="0" oninput="updPrev()">
+    </div>
+    <button class="rm-btn" onclick="rmRow('${id}')" title="Eliminar fila">✕</button>
+  `;
   c.appendChild(d);
   updPrev();
 }
 
-function rmRow(id) { const el = document.getElementById(id); if(el) el.remove(); updPrev(); }
+function rmRow(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+  updPrev();
+}
 
 function getRows(containerId) {
   const rows = [];
   document.getElementById(containerId).querySelectorAll('.ent-row').forEach(row => {
-    const ins = row.querySelectorAll('input');
-    const name = ins[0].value.trim();
-    const amount = parseFloat(ins[1].value) || 0;
-    if (name || amount > 0) rows.push({ name: name || 'Sin nombre', amount });
+    const sel    = row.querySelector('select');
+    const input  = row.querySelector('input[type="number"]');
+    const name   = sel ? sel.value.trim() : '';
+    const amount = input ? (parseFloat(input.value) || 0) : 0;
+    // Include row if it has a valid entity selected, regardless of amount
+    if (name) rows.push({ name, amount });
   });
   return rows;
 }
 
 function updPrev() {
-  const s = getRows('savDiv').reduce((a,r) => a+r.amount, 0);
-  const i = getRows('invDiv').reduce((a,r) => a+r.amount, 0);
-  document.getElementById('prevTxt').textContent = `Ahorros: ${fmt(s)} · Inversiones: ${fmt(i)} · Total: ${fmt(s+i)}`;
+  const s = getRows('savDiv').reduce((a,r) => a + r.amount, 0);
+  const i = getRows('invDiv').reduce((a,r) => a + r.amount, 0);
+  document.getElementById('prevTxt').textContent =
+    `Ahorros: ${fmt(s)} · Inversiones: ${fmt(i)} · Total: ${fmt(s+i)}`;
 }
 
+// ── ADD ENTRY ─────────────────────────────────────────────────────────────
 function addEntry() {
   const month = document.getElementById('inMonth').value;
-  const year = parseInt(document.getElementById('inYear').value);
+  const year  = parseInt(document.getElementById('inYear').value);
+
   if (!year || year < 2000 || year > 2100) { toast('Año inválido', 1); return; }
+
   const savings = getRows('savDiv');
   const invest  = getRows('invDiv');
-  if (!savings.length && !invest.length) { toast('Añade al menos una entidad', 1); return; }
+
+  if (!savings.length && !invest.length) {
+    toast('Añade al menos una entidad con su importe', 1);
+    return;
+  }
+
   const key = `${year}-${month}`;
   const idx = entries.findIndex(e => e.key === key);
+  const isUpdate = idx >= 0;
   const entry = { key, year, month, savings, invest };
-  if (idx >= 0) { entries[idx] = entry; toast('Registro actualizado ✓'); }
-  else { entries.push(entry); toast('Registro guardado ✓'); }
-  entries.sort((a,b) => a.key.localeCompare(b.key));
-  save(); renderAll();
+
+  if (isUpdate) entries[idx] = entry;
+  else entries.push(entry);
+
+  entries.sort((a, b) => a.key.localeCompare(b.key));
+  saveEntries();
+  renderAll();
+
+  // Show success banner
+  const banner = document.getElementById('successBanner');
+  const msg    = document.getElementById('successMsg');
+  msg.textContent = isUpdate
+    ? `Registro de ${mn(month)} ${year} actualizado con éxito`
+    : `Registro de ${mn(month)} ${year} añadido con éxito`;
+  banner.classList.add('show');
+  setTimeout(() => banner.classList.remove('show'), 4000);
+
+  // Reset form rows
+  document.getElementById('savDiv').innerHTML = '';
+  document.getElementById('invDiv').innerHTML = '';
+  rowId = 0;
+  addRow('savDiv');
+  addRow('invDiv');
+  updPrev();
 }
 
-function fmt(n) { if(n==null) return '—'; return currency+' '+n.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function fmtK(n) { if(n>=1e6) return currency+(n/1e6).toFixed(2)+'M'; if(n>=1e3) return currency+(n/1e3).toFixed(1)+'k'; return currency+n.toFixed(0); }
-function mn(m) { return ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][parseInt(m)-1]; }
-function totS(e) { return (e.savings||[]).reduce((a,r) => a+r.amount, 0); }
-function totI(e) { return (e.invest||[]).reduce((a,r) => a+r.amount, 0); }
+// ── FORMAT HELPERS ────────────────────────────────────────────────────────
+function fmt(n) {
+  if (n == null) return '—';
+  return currency + ' ' + n.toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function fmtK(n) {
+  if (n >= 1e6) return currency + (n/1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return currency + (n/1e3).toFixed(1) + 'k';
+  return currency + n.toFixed(0);
+}
+function mn(m) {
+  return ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][parseInt(m)-1];
+}
+function totS(e) { return (e.savings||[]).reduce((a,r) => a + r.amount, 0); }
+function totI(e) { return (e.invest ||[]).reduce((a,r) => a + r.amount, 0); }
 
-function renderAll() { renderSummary(); renderHistory(); renderLastPrev(); renderEntRes(); renderCharts(); }
+// ── RENDER ALL ────────────────────────────────────────────────────────────
+function renderAll() {
+  renderSummary();
+  renderHistory();
+  renderLastPrev();
+  renderEntRes();
+  renderCharts();
+}
 
 function renderSummary() {
-  if (!entries.length) { ['sumS','sumI','sumT','chgS','chgI','chgT'].forEach(id => document.getElementById(id).textContent='—'); return; }
-  const last = entries[entries.length-1], prev = entries.length > 1 ? entries[entries.length-2] : null;
-  const ls = totS(last), li = totI(last), lt = ls+li;
+  if (!entries.length) {
+    ['sumS','sumI','sumT','chgS','chgI','chgT'].forEach(id => document.getElementById(id).textContent = '—');
+    return;
+  }
+  const last = entries[entries.length-1];
+  const prev = entries.length > 1 ? entries[entries.length-2] : null;
+  const ls = totS(last), li = totI(last), lt = ls + li;
+
   document.getElementById('sumS').textContent = fmt(ls);
   document.getElementById('sumI').textContent = fmt(li);
   document.getElementById('sumT').textContent = fmt(lt);
+
   function chg(curr, pv, id) {
     const el = document.getElementById(id);
-    if (!prev) { el.textContent='Primer registro'; el.className='sum-chg'; return; }
+    if (!prev) { el.textContent = 'Primer registro'; el.className = 'sum-chg'; return; }
     const d = curr - pv;
-    el.textContent = (d>=0?'+':'')+fmt(d)+' vs anterior';
-    el.className = 'sum-chg '+(d>=0?'up':'dn');
+    el.textContent = (d >= 0 ? '+' : '') + fmt(d) + ' vs anterior';
+    el.className = 'sum-chg ' + (d >= 0 ? 'up' : 'dn');
   }
-  chg(ls, totS(prev), 'chgS'); chg(li, totI(prev), 'chgI'); chg(lt, totS(prev)+totI(prev), 'chgT');
+  chg(ls, totS(prev), 'chgS');
+  chg(li, totI(prev), 'chgI');
+  chg(lt, totS(prev)+totI(prev), 'chgT');
 }
 
 function renderHistory() {
   const tb = document.getElementById('histTbody');
-  if (!entries.length) { tb.innerHTML=`<tr><td colspan="6" class="empty"><span class="ico">📭</span>Sin registros</td></tr>`; return; }
+  if (!entries.length) {
+    tb.innerHTML = `<tr><td colspan="6" class="empty"><span class="ico">📭</span>Sin registros aún</td></tr>`;
+    return;
+  }
   tb.innerHTML = [...entries].reverse().map(e => {
     const s = totS(e), inv = totI(e);
     const did = 'd_' + e.key.replace('-','_');
-    const sr = (e.savings||[]).map(r=>`<div class="ent-item"><span>${r.name}</span><span class="cs">${fmt(r.amount)}</span></div>`).join('');
-    const ir = (e.invest||[]).map(r=>`<div class="ent-item"><span>${r.name}</span><span class="ci">${fmt(r.amount)}</span></div>`).join('');
-    return `<tr>
-      <td style="color:var(--txt2);white-space:nowrap">${mn(e.month)} ${e.year}</td>
-      <td class="cs">${fmt(s)}</td><td class="ci">${fmt(inv)}</td><td class="ct">${fmt(s+inv)}</td>
-      <td><button class="exp-btn" onclick="togDet('${did}')">▾</button></td>
-      <td><button class="btn btn-danger" onclick="delEntry('${e.key}')">✕</button></td>
-    </tr>
-    <tr class="detail-row hidden" id="${did}">
-      <td colspan="6">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:8px 0 4px">
-          <div>
-            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);margin-bottom:8px">Ahorros</div>
-            ${sr||'<span style="color:var(--txt3);font-size:11px">Sin datos</span>'}
+    const sr = (e.savings||[]).map(r =>
+      `<div class="ent-item"><span>${r.name}</span><span class="cs">${fmt(r.amount)}</span></div>`
+    ).join('');
+    const ir = (e.invest||[]).map(r =>
+      `<div class="ent-item"><span>${r.name}</span><span class="ci">${fmt(r.amount)}</span></div>`
+    ).join('');
+    return `
+      <tr>
+        <td style="color:var(--txt2);white-space:nowrap">${mn(e.month)} ${e.year}</td>
+        <td class="cs">${fmt(s)}</td>
+        <td class="ci">${fmt(inv)}</td>
+        <td class="ct">${fmt(s+inv)}</td>
+        <td><button class="exp-btn" onclick="togDet('${did}')">▾</button></td>
+        <td><button class="btn btn-danger" onclick="delEntry('${e.key}')">✕</button></td>
+      </tr>
+      <tr class="detail-row hidden" id="${did}">
+        <td colspan="6">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:10px 0 4px">
+            <div>
+              <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);margin-bottom:8px">Ahorros</div>
+              ${sr || '<span style="color:var(--txt3);font-size:11px">Sin datos</span>'}
+            </div>
+            <div>
+              <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);margin-bottom:8px">Inversiones</div>
+              ${ir || '<span style="color:var(--txt3);font-size:11px">Sin datos</span>'}
+            </div>
           </div>
-          <div>
-            <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);margin-bottom:8px">Inversiones</div>
-            ${ir||'<span style="color:var(--txt3);font-size:11px">Sin datos</span>'}
-          </div>
-        </div>
-      </td>
-    </tr>`;
+        </td>
+      </tr>`;
   }).join('');
 }
 
 function togDet(id) {
-  const el = document.getElementById(id);
+  const el  = document.getElementById(id);
   el.classList.toggle('hidden');
-  el.previousElementSibling.querySelector('.exp-btn').textContent = el.classList.contains('hidden') ? '▾' : '▴';
+  const btn = el.previousElementSibling.querySelector('.exp-btn');
+  btn.textContent = el.classList.contains('hidden') ? '▾' : '▴';
 }
 
 function renderLastPrev() {
   const el = document.getElementById('lastPrev');
-  if (!entries.length) { el.innerHTML='<span class="ico">📭</span>Sin registros aún'; el.className='empty'; return; }
+  if (!entries.length) {
+    el.innerHTML = '<span class="ico">📭</span>Sin registros aún';
+    el.className = 'empty';
+    return;
+  }
   const e = entries[entries.length-1], s = totS(e), inv = totI(e);
-  const sr = (e.savings||[]).map(r=>`<tr style="border-top:1px solid var(--border)"><td style="padding:10px 16px;color:var(--txt2)">${r.name}</td><td style="padding:10px 16px" class="cs">${fmt(r.amount)}</td><td style="padding:10px 16px"><span class="tag s">Ahorro</span></td></tr>`).join('');
-  const ir = (e.invest||[]).map(r=>`<tr style="border-top:1px solid var(--border)"><td style="padding:10px 16px;color:var(--txt2)">${r.name}</td><td style="padding:10px 16px" class="ci">${fmt(r.amount)}</td><td style="padding:10px 16px"><span class="tag i">Inversión</span></td></tr>`).join('');
+  const sr = (e.savings||[]).map(r =>
+    `<tr style="border-top:1px solid var(--border)">
+      <td style="padding:10px 16px;color:var(--txt2)">${r.name}</td>
+      <td style="padding:10px 16px" class="cs">${fmt(r.amount)}</td>
+      <td style="padding:10px 16px"><span class="tag s">Ahorro</span></td>
+    </tr>`
+  ).join('');
+  const ir = (e.invest||[]).map(r =>
+    `<tr style="border-top:1px solid var(--border)">
+      <td style="padding:10px 16px;color:var(--txt2)">${r.name}</td>
+      <td style="padding:10px 16px" class="ci">${fmt(r.amount)}</td>
+      <td style="padding:10px 16px"><span class="tag i">Inversión</span></td>
+    </tr>`
+  ).join('');
   el.className = '';
-  el.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:12px">
-    <tr><td colspan="3" style="padding:12px 16px;color:var(--txt3);font-size:10px;letter-spacing:1px">${mn(e.month)} ${e.year}</td></tr>
-    ${sr}${ir}
-    <tr style="border-top:1px solid var(--border2)"><td style="padding:11px 16px;color:var(--txt3)">Total ahorros</td><td class="cs" style="padding:11px 16px">${fmt(s)}</td><td></td></tr>
-    <tr style="border-top:1px solid var(--border2)"><td style="padding:11px 16px;color:var(--txt3)">Total inversiones</td><td class="ci" style="padding:11px 16px">${fmt(inv)}</td><td></td></tr>
-    <tr style="border-top:1px solid var(--border2)"><td style="padding:12px 16px;font-weight:500;color:var(--txt2)">TOTAL</td><td class="ct" style="padding:12px 16px;font-size:15px;font-family:'Playfair Display',serif">${fmt(s+inv)}</td><td></td></tr>
-  </table>`;
+  el.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr><td colspan="3" style="padding:12px 16px;color:var(--txt3);font-size:10px;letter-spacing:1px">${mn(e.month)} ${e.year}</td></tr>
+      ${sr}${ir}
+      <tr style="border-top:1px solid var(--border2)">
+        <td style="padding:11px 16px;color:var(--txt3)">Total ahorros</td>
+        <td class="cs" style="padding:11px 16px">${fmt(s)}</td><td></td>
+      </tr>
+      <tr style="border-top:1px solid var(--border2)">
+        <td style="padding:11px 16px;color:var(--txt3)">Total inversiones</td>
+        <td class="ci" style="padding:11px 16px">${fmt(inv)}</td><td></td>
+      </tr>
+      <tr style="border-top:1px solid var(--border2)">
+        <td style="padding:12px 16px;font-weight:500;color:var(--txt2)">TOTAL</td>
+        <td class="ct" style="padding:12px 16px;font-size:15px;font-family:'Playfair Display',serif">${fmt(s+inv)}</td><td></td>
+      </tr>
+    </table>`;
 }
 
 function renderEntRes() {
   const el = document.getElementById('entResumen');
   if (!entries.length) { el.innerHTML='<span class="ico">🏦</span>Sin datos aún'; el.className='empty'; return; }
-  const e = entries[entries.length-1];
-  const all = [...(e.savings||[]).map(r=>({...r,type:'savings'})), ...(e.invest||[]).map(r=>({...r,type:'invest'}))];
+  const e   = entries[entries.length-1];
+  const all = [
+    ...(e.savings||[]).map(r => ({...r, type:'savings'})),
+    ...(e.invest ||[]).map(r => ({...r, type:'invest'}))
+  ];
   if (!all.length) { el.innerHTML='<span class="ico">🏦</span>Sin entidades'; el.className='empty'; return; }
   el.className = '';
-  el.innerHTML = `<table style="width:100%;border-collapse:collapse">
-    <thead><tr><th>Entidad</th><th>Tipo</th><th>Importe</th></tr></thead>
-    <tbody>${all.map(r=>`<tr>
-      <td>${r.name}</td>
-      <td><span class="tag ${r.type==='savings'?'s':'i'}">${r.type==='savings'?'Ahorro':'Inversión'}</span></td>
-      <td class="${r.type==='savings'?'cs':'ci'}">${fmt(r.amount)}</td>
-    </tr>`).join('')}</tbody>
-  </table>`;
+  el.innerHTML = `
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr><th>Entidad</th><th>Tipo</th><th>Importe</th></tr></thead>
+      <tbody>
+        ${all.map(r => `
+          <tr>
+            <td>${r.name}</td>
+            <td><span class="tag ${r.type==='savings'?'s':'i'}">${r.type==='savings'?'Ahorro':'Inversión'}</span></td>
+            <td class="${r.type==='savings'?'cs':'ci'}">${fmt(r.amount)}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
 }
 
 function delEntry(key) {
   if (!confirm('¿Eliminar este registro?')) return;
   entries = entries.filter(e => e.key !== key);
-  save(); renderAll(); toast('Registro eliminado');
+  saveEntries(); renderAll(); toast('Registro eliminado');
 }
 
-Chart.defaults.color = '#343d34';
+// ── CHARTS ────────────────────────────────────────────────────────────────
+Chart.defaults.color       = '#343d34';
 Chart.defaults.font.family = "'JetBrains Mono',monospace";
-Chart.defaults.font.size = 10;
+Chart.defaults.font.size   = 10;
 
-function killChart(id) { if(charts[id]) { charts[id].destroy(); delete charts[id]; } }
+function killChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
 
 function grad(ctx, color) {
-  const g = ctx.createLinearGradient(0,0,0,240);
+  const g = ctx.createLinearGradient(0, 0, 0, 240);
   g.addColorStop(0, color+'40'); g.addColorStop(1, color+'00'); return g;
 }
 
 function lineOpts(extra={}) {
   return {
-    responsive:true, maintainAspectRatio:false,
-    interaction:{mode:'index',intersect:false},
-    plugins:{legend:{display:false}, tooltip:{backgroundColor:'#131714',borderColor:'#1f241f',borderWidth:1,titleColor:'#6b7d6b',bodyColor:'#dde8dd',padding:10,
-      callbacks:{label:ctx=>` ${currency} ${ctx.parsed.y.toLocaleString('es-ES',{minimumFractionDigits:2})}`}}, ...extra},
-    scales:{x:{grid:{color:'#141814'},ticks:{color:'#343d34',maxTicksLimit:6}},y:{grid:{color:'#141814'},ticks:{color:'#343d34',callback:v=>fmtK(v)}}},
-    elements:{line:{tension:0.4,borderWidth:2},point:{radius:3,hoverRadius:6}}
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode:'index', intersect:false },
+    plugins: {
+      legend: { display:false },
+      tooltip: {
+        backgroundColor:'#131714', borderColor:'#1f241f', borderWidth:1,
+        titleColor:'#6b7d6b', bodyColor:'#dde8dd', padding:10,
+        callbacks: { label: ctx => ` ${currency} ${ctx.parsed.y.toLocaleString('es-ES',{minimumFractionDigits:2})}` }
+      },
+      ...extra
+    },
+    scales: {
+      x: { grid:{color:'#141814'}, ticks:{color:'#343d34', maxTicksLimit:6} },
+      y: { grid:{color:'#141814'}, ticks:{color:'#343d34', callback: v => fmtK(v)} }
+    },
+    elements: { line:{tension:0.4, borderWidth:2}, point:{radius:3, hoverRadius:6} }
   };
 }
 
 function renderCharts() {
-  const labels = entries.map(e=>`${mn(e.month)} ${e.year}`);
-  const sD = entries.map(e=>totS(e)), iD = entries.map(e=>totI(e)), tD = entries.map(e=>totS(e)+totI(e));
+  const labels = entries.map(e => `${mn(e.month)} ${e.year}`);
+  const sD = entries.map(e => totS(e));
+  const iD = entries.map(e => totI(e));
+  const tD = entries.map(e => totS(e) + totI(e));
 
   killChart('tot');
   const ct = document.getElementById('cTotal').getContext('2d');
-  charts['tot'] = new Chart(ct, {type:'line', data:{labels, datasets:[
-    {label:'Total',data:tD,borderColor:'#66b8ff',backgroundColor:grad(ct,'#66b8ff'),fill:true},
-    {label:'Ahorros',data:sD,borderColor:'#4dff7c',backgroundColor:'transparent',borderDash:[4,4]},
-    {label:'Inversiones',data:iD,borderColor:'#ffd166',backgroundColor:'transparent',borderDash:[4,4]}
-  ]}, options:{...lineOpts({legend:{display:true,labels:{color:'#6b7d6b',font:{size:10},boxWidth:10,padding:14}}})}});
+  charts['tot'] = new Chart(ct, { type:'line', data:{ labels, datasets:[
+    { label:'Total',       data:tD, borderColor:'#66b8ff', backgroundColor:grad(ct,'#66b8ff'), fill:true },
+    { label:'Ahorros',     data:sD, borderColor:'#4dff7c', backgroundColor:'transparent', borderDash:[4,4] },
+    { label:'Inversiones', data:iD, borderColor:'#ffd166', backgroundColor:'transparent', borderDash:[4,4] }
+  ]}, options:{ ...lineOpts({ legend:{ display:true, labels:{ color:'#6b7d6b', font:{size:10}, boxWidth:10, padding:14 } } }) }});
 
   killChart('sav');
   const cs = document.getElementById('cSav').getContext('2d');
-  charts['sav'] = new Chart(cs, {type:'line', data:{labels, datasets:[{data:sD,borderColor:'#4dff7c',backgroundColor:grad(cs,'#4dff7c'),fill:true}]}, options:lineOpts()});
+  charts['sav'] = new Chart(cs, { type:'line', data:{ labels, datasets:[
+    { data:sD, borderColor:'#4dff7c', backgroundColor:grad(cs,'#4dff7c'), fill:true }
+  ]}, options: lineOpts() });
 
   killChart('inv');
   const ci = document.getElementById('cInv').getContext('2d');
-  charts['inv'] = new Chart(ci, {type:'line', data:{labels, datasets:[{data:iD,borderColor:'#ffd166',backgroundColor:grad(ci,'#ffd166'),fill:true}]}, options:lineOpts()});
+  charts['inv'] = new Chart(ci, { type:'line', data:{ labels, datasets:[
+    { data:iD, borderColor:'#ffd166', backgroundColor:grad(ci,'#ffd166'), fill:true }
+  ]}, options: lineOpts() });
 
   killChart('dist');
   const last = entries.length ? entries[entries.length-1] : null;
   const cd = document.getElementById('cDist').getContext('2d');
-  charts['dist'] = new Chart(cd, {type:'doughnut',
-    data:{labels:['Ahorros','Inversiones'], datasets:[{
-      data: last ? [totS(last),totI(last)] : [1,1],
+  charts['dist'] = new Chart(cd, { type:'doughnut',
+    data:{ labels:['Ahorros','Inversiones'], datasets:[{
+      data: last ? [totS(last), totI(last)] : [1,1],
       backgroundColor: last ? ['rgba(77,255,124,.12)','rgba(255,209,102,.12)'] : ['#1f241f','#1f241f'],
-      borderColor: last ? ['#4dff7c','#ffd166'] : ['#1f241f','#1f241f'], borderWidth:2
+      borderColor:     last ? ['#4dff7c','#ffd166'] : ['#1f241f','#1f241f'],
+      borderWidth: 2
     }]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'72%',
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'72%',
       plugins:{
-        legend:{display:true,position:'bottom',labels:{color:'#6b7d6b',font:{size:10},boxWidth:10,padding:18}},
-        tooltip:{backgroundColor:'#131714',borderColor:'#1f241f',borderWidth:1,
-          callbacks:{label:ctx=>{const tot=ctx.dataset.data.reduce((a,b)=>a+b,0);const pct=tot?((ctx.parsed/tot)*100).toFixed(1):0;return ` ${currency} ${ctx.parsed.toLocaleString('es-ES',{minimumFractionDigits:2})} (${pct}%)`;}}
+        legend:{ display:true, position:'bottom', labels:{ color:'#6b7d6b', font:{size:10}, boxWidth:10, padding:18 } },
+        tooltip:{ backgroundColor:'#131714', borderColor:'#1f241f', borderWidth:1,
+          callbacks:{ label: ctx => {
+            const tot = ctx.dataset.data.reduce((a,b) => a+b, 0);
+            const pct = tot ? ((ctx.parsed/tot)*100).toFixed(1) : 0;
+            return ` ${currency} ${ctx.parsed.toLocaleString('es-ES',{minimumFractionDigits:2})} (${pct}%)`;
+          }}
         }
       }
     }
   });
 }
 
+// ── EXPORT / IMPORT ───────────────────────────────────────────────────────
 function exportData() {
-  const b = new Blob([JSON.stringify({entries, currency, exportedAt:new Date().toISOString()},null,2)],{type:'application/json'});
+  const b = new Blob([JSON.stringify({ entries, currency, entities, exportedAt: new Date().toISOString() }, null, 2)], { type:'application/json' });
   const u = URL.createObjectURL(b), a = document.createElement('a');
-  a.href=u; a.download=`mis-finanzas-${new Date().toISOString().slice(0,10)}.json`;
+  a.href = u; a.download = `mis-finanzas-${new Date().toISOString().slice(0,10)}.json`;
   a.click(); URL.revokeObjectURL(u); toast('Datos exportados ✓');
 }
 
-function importData(e) {
-  const f = e.target.files[0]; if(!f) return;
+function importData(ev) {
+  const f = ev.target.files[0]; if (!f) return;
   const r = new FileReader();
-  r.onload = ev => {
+  r.onload = e => {
     try {
-      const d = JSON.parse(ev.target.result);
+      const d = JSON.parse(e.target.result);
       if (d.entries && Array.isArray(d.entries)) {
         if (!confirm(`Importar ${d.entries.length} registros? Se reemplazarán los datos actuales.`)) return;
         entries = d.entries;
-        if (d.currency) { currency = d.currency; localStorage.setItem(CK, currency); document.getElementById('currSel').value = currency; }
-        save(); renderAll(); toast('Datos importados ✓');
+        if (d.currency)  { currency = d.currency; localStorage.setItem(CK, currency); document.getElementById('currSel').value = currency; }
+        if (d.entities && Array.isArray(d.entities)) { entities = d.entities; saveEntities(); renderEntityChips(); }
+        saveEntries(); renderAll(); toast('Datos importados ✓');
       } else toast('Archivo inválido', 1);
     } catch { toast('Error al leer el archivo', 1); }
   };
-  r.readAsText(f); e.target.value = '';
+  r.readAsText(f); ev.target.value = '';
 }
 
 function clearAll() {
-  if (!confirm('¿Borrar TODOS los datos? No se puede deshacer.')) return;
-  entries = []; save(); renderAll(); toast('Datos eliminados');
+  if (!confirm('¿Borrar TODOS los registros? No se puede deshacer.')) return;
+  entries = []; saveEntries(); renderAll(); toast('Datos eliminados');
 }
 
+// ── TOAST ─────────────────────────────────────────────────────────────────
 let tt;
 function toast(msg, err=0) {
   const el = document.getElementById('toast');
-  el.textContent = msg; el.className = 'toast'+(err?' err':'');
+  el.textContent = msg; el.className = 'toast' + (err ? ' err' : '');
   el.classList.add('show'); clearTimeout(tt);
   tt = setTimeout(() => el.classList.remove('show'), 2600);
 }
