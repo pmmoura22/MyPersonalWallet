@@ -163,7 +163,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <div class="hdr">
     <div>
       <h1>Mis <em>Finanzas</em></h1>
-      <div class="hdr-sub">Seguimiento personal · Local · <span style="color:var(--green)">v8</span></div>
+      <div class="hdr-sub">Seguimiento personal · Local · <span style="color:var(--green)">v9</span></div>
     </div>
     <div class="hdr-date" id="hdrDate"></div>
   </div>
@@ -569,6 +569,7 @@ function renderAll() {
   renderLastPrev();
   renderEntRes();
   renderCharts();
+  renderEntityChips();
 }
 
 function renderSummary() {
@@ -827,8 +828,8 @@ function importData(ev) {
 }
 
 function clearAll() {
-  if (!confirm('¿Borrar TODOS los registros? No se puede deshacer.')) return;
-  entries = []; saveEntries(); renderAll(); toast('Datos eliminados');
+  if (!confirm('¿Borrar TODOS los registros? No se puede deshacer.\n\nLas entidades configuradas no se eliminarán.')) return;
+  entries = []; saveEntries(); renderAll(); toast('Registros eliminados');
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────────────
