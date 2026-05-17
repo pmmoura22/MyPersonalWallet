@@ -175,6 +175,17 @@ tr:hover td{background:#0f1210}
 .gasto-row{display:grid;grid-template-columns:1fr 130px auto;gap:8px;margin-bottom:8px;align-items:end}
 @media(max-width:480px){.gasto-row{grid-template-columns:1fr 100px auto}}
 
+/* invest rows: type + ticker/name + entity + amount + remove */
+.inv-row{display:grid;grid-template-columns:110px 1fr 1fr 120px auto;gap:8px;margin-bottom:10px;align-items:end}
+@media(max-width:680px){.inv-row{grid-template-columns:1fr 1fr;row-gap:6px}}
+.type-badge{display:inline-block;padding:3px 9px;border-radius:100px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500}
+.type-badge.acciones{background:rgba(102,184,255,.15);color:#66b8ff}
+.type-badge.crypto{background:rgba(255,209,102,.15);color:#ffd166}
+.type-badge.otro{background:rgba(180,180,180,.1);color:#9aaa9a}
+.inv-type-acciones{color:#66b8ff}
+.inv-type-crypto{color:#ffd166}
+.inv-type-otro{color:#9aaa9a}
+
 ::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(–border2);border-radius:2px}
@@ -188,7 +199,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <div class="hdr">
     <div>
       <h1>Mis <em>Finanzas</em></h1>
-      <div class="hdr-sub">Seguimiento personal · Local · <span style="color:var(--green)">v11</span></div>
+      <div class="hdr-sub">Seguimiento personal · Local · <span style="color:var(--green)">v13</span></div>
     </div>
     <div class="hdr-date" id="hdrDate"></div>
   </div>
@@ -229,11 +240,30 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <div class="chart-card"><h3>Evolución total</h3><div class="chart-wrap"><canvas id="cTotal"></canvas></div></div>
     <div class="dual">
       <div class="chart-card"><h3>Ahorros</h3><div class="chart-wrap"><canvas id="cSav"></canvas></div></div>
-      <div class="chart-card"><h3>Inversiones</h3><div class="chart-wrap"><canvas id="cInv"></canvas></div></div>
+      <div class="chart-card"><h3>Inversiones totales</h3><div class="chart-wrap"><canvas id="cInv"></canvas></div></div>
     </div>
-    <div class="chart-card"><h3>Distribución actual</h3><div class="chart-wrap" style="height:200px"><canvas id="cDist"></canvas></div></div>
+    <!-- Invest breakdown -->
+    <div class="chart-card">
+      <h3>Inversiones por tipo — evolución</h3>
+      <div class="chart-wrap" style="height:260px"><canvas id="cInvType"></canvas></div>
+    </div>
+    <div class="dual">
+      <div class="chart-card">
+        <h3>Distribución por tipo</h3>
+        <div class="chart-wrap" style="height:220px"><canvas id="cInvTypeDist"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Distribución ahorros / inversiones</h3>
+        <div class="chart-wrap" style="height:220px"><canvas id="cDist"></canvas></div>
+      </div>
+    </div>
+    <!-- Top assets table -->
     <div class="table-card">
-      <h3>Entidades — mes actual</h3>
+      <h3>Activos — mes actual</h3>
+      <div id="assetsTable" class="empty"><span class="ico">📊</span>Sin datos aún</div>
+    </div>
+    <div class="table-card">
+      <h3>Ahorros por entidad — mes actual</h3>
       <div id="entResumen" class="empty"><span class="ico">🏦</span>Sin datos aún</div>
     </div>
 
@@ -396,9 +426,16 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 
   <!-- INVERSIONES -->
   <div class="ent-wrap">
-    <h4>🟡 Inversiones por entidad</h4>
+    <h4>🟡 Inversiones por tipo y activo</h4>
+    <div style="font-size:10px;color:var(--txt3);margin-bottom:12px;line-height:1.7">
+      Añade cada posición con su tipo (acción, cripto…), nombre del activo, entidad donde está y el importe actual.
+    </div>
     <div id="invDiv"></div>
-    <button class="add-ent-btn" onclick="addRow('invDiv')">+ Añadir entidad de inversión</button>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+      <button class="add-ent-btn" style="flex:1;min-width:140px" onclick="addInvRow('invDiv','acciones')">+ Acción</button>
+      <button class="add-ent-btn" style="flex:1;min-width:140px" onclick="addInvRow('invDiv','crypto')">+ Cripto</button>
+      <button class="add-ent-btn" style="flex:1;min-width:140px" onclick="addInvRow('invDiv','otro')">+ Otro</button>
+    </div>
   </div>
 
   <div style="margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
@@ -527,7 +564,7 @@ function init() {
 
   // Start with one empty row each
   addRow('savDiv');
-  addRow('invDiv');
+  addInvRow('invDiv','acciones');
   initBudget();
 
   renderAll();
@@ -632,6 +669,76 @@ function addRow(containerId) {
   updPrev();
 }
 
+// ── INVEST ROWS (type + ticker + entity + amount) ─────────────────────────
+const INV_TYPES = {
+  acciones: { label: 'Acciones', color: '#66b8ff', placeholder: 'Ej: Apple, MSFT, Inditex...' },
+  crypto:   { label: 'Cripto',   color: '#ffd166', placeholder: 'Ej: Bitcoin, Ethereum, SOL...' },
+  otro:     { label: 'Otro',     color: '#9aaa9a', placeholder: 'Ej: ETF, Bono, Fondo...' }
+};
+
+function addInvRow(containerId, type='acciones', ticker='', entity='', amount='') {
+  const id   = 'r' + rowId++;
+  const c    = document.getElementById(containerId);
+  const d    = document.createElement('div');
+  const cfg  = INV_TYPES[type] || INV_TYPES.otro;
+  const entOpts = entities.length
+    ? entities.map(e => `<option value="${e}" ${e===entity?'selected':''}>${e}</option>`).join('')
+    : '<option value="">— Sin entidades —</option>';
+
+  d.className = 'inv-row';
+  d.id = id;
+  d.dataset.invtype = type;
+  d.innerHTML = `
+    <div class="field">
+      <label>Tipo</label>
+      <select onchange="changeInvType('${id}',this.value);updPrev()" style="border-color:${cfg.color}33">
+        <option value="acciones" ${type==='acciones'?'selected':''}>📈 Acciones</option>
+        <option value="crypto"   ${type==='crypto'  ?'selected':''}>🪙 Cripto</option>
+        <option value="otro"     ${type==='otro'    ?'selected':''}>📦 Otro</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="ticker-lbl-${id}">Activo / Ticker</label>
+      <input type="text" class="ticker-inp-${id}" placeholder="${cfg.placeholder}" value="${ticker}" oninput="updPrev()" style="border-color:${cfg.color}33">
+    </div>
+    <div class="field">
+      <label>Entidad</label>
+      <select class="ent-select" onchange="updPrev()">${entOpts}</select>
+    </div>
+    <div class="field">
+      <label>Importe</label>
+      <input type="number" placeholder="0.00" step="0.01" min="0" value="${amount}" oninput="updPrev()">
+    </div>
+    <button class="rm-btn" onclick="rmRow('${id}')">✕</button>
+  `;
+  c.appendChild(d);
+  updPrev();
+}
+
+function changeInvType(id, type) {
+  const row = document.getElementById(id);
+  row.dataset.invtype = type;
+  const cfg = INV_TYPES[type] || INV_TYPES.otro;
+  const lbl = row.querySelector('.ticker-lbl-'+id);
+  const inp = row.querySelector('.ticker-inp-'+id);
+  const sel = row.querySelector('select');
+  if(lbl) lbl.textContent = 'Activo / Ticker';
+  if(inp) { inp.placeholder = cfg.placeholder; inp.style.borderColor = cfg.color+'33'; }
+  if(sel) sel.style.borderColor = cfg.color+'33';
+}
+
+function getInvRows(containerId) {
+  const rows = [];
+  document.getElementById(containerId).querySelectorAll('.inv-row').forEach(row => {
+    const type   = row.dataset.invtype || 'otro';
+    const ticker = (row.querySelector('input[type="text"]') || {}).value?.trim() || '';
+    const entity = (row.querySelector('.ent-select') || {}).value?.trim() || '';
+    const amount = parseFloat((row.querySelector('input[type="number"]') || {}).value) || 0;
+    if (ticker || amount > 0) rows.push({ type, ticker: ticker||'Sin nombre', entity, amount });
+  });
+  return rows;
+}
+
 function rmRow(id) {
   const el = document.getElementById(id);
   if (el) el.remove();
@@ -653,7 +760,7 @@ function getRows(containerId) {
 
 function updPrev() {
   const s = getRows('savDiv').reduce((a,r) => a + r.amount, 0);
-  const i = getRows('invDiv').reduce((a,r) => a + r.amount, 0);
+  const i = getInvRows('invDiv').reduce((a,r) => a + r.amount, 0);
   document.getElementById('prevTxt').textContent =
     `Ahorros: ${fmt(s)} · Inversiones: ${fmt(i)} · Total: ${fmt(s+i)}`;
 }
@@ -669,7 +776,7 @@ function addEntry() {
   }
 
   const savings = getRows('savDiv');
-  const invest  = getRows('invDiv');
+  const invest  = getInvRows('invDiv');
 
   // Check at least one row has an amount > 0
   const hasData = [...savings, ...invest].some(r => r.amount > 0);
@@ -693,7 +800,7 @@ function addEntry() {
   document.getElementById('invDiv').innerHTML = '';
   rowId = 0;
   addRow('savDiv');
-  addRow('invDiv');
+  addInvRow('invDiv','acciones');
   updPrev();
 
   renderAll();
@@ -773,9 +880,13 @@ function renderHistory() {
     const sr = (e.savings||[]).map(r =>
       `<div class="ent-item"><span>${r.name}</span><span class="cs">${fmt(r.amount)}</span></div>`
     ).join('');
-    const ir = (e.invest||[]).map(r =>
-      `<div class="ent-item"><span>${r.name}</span><span class="ci">${fmt(r.amount)}</span></div>`
-    ).join('');
+    const typeColors = {acciones:'#66b8ff',crypto:'#ffd166',otro:'#9aaa9a'};
+    const ir = (e.invest||[]).map(r => {
+      const col = typeColors[r.type]||'#9aaa9a';
+      const lbl = r.ticker||r.name||'—';
+      const ent = r.entity ? ` · ${r.entity}` : '';
+      return `<div class="ent-item"><span>${lbl}${ent} <span class="type-badge ${r.type||'otro'}" style="font-size:8px">${r.type||'otro'}</span></span><span style="color:${col}">${fmt(r.amount)}</span></div>`;
+    }).join('');
     return `
       <tr>
         <td style="color:var(--txt2);white-space:nowrap">${mn(e.month)} ${e.year}</td>
@@ -964,7 +1075,124 @@ function renderCharts() {
     }
   });
 
+  renderInvestTypeCharts();
+  renderAssetsTable();
   renderProjection();
+}
+
+// ── INVEST TYPE CHARTS ────────────────────────────────────────────────────
+function renderInvestTypeCharts() {
+  killChart('invType');
+  const labels = entries.map(e => `${mn(e.month)} ${e.year}`);
+  const acData = entries.map(e => (e.invest||[]).filter(r=>r.type==='acciones').reduce((a,r)=>a+r.amount,0));
+  const crData = entries.map(e => (e.invest||[]).filter(r=>r.type==='crypto').reduce((a,r)=>a+r.amount,0));
+  const otData = entries.map(e => (e.invest||[]).filter(r=>r.type==='otro'||!r.type).reduce((a,r)=>a+r.amount,0));
+
+  const cit = document.getElementById('cInvType').getContext('2d');
+  const gAc = cit.createLinearGradient(0,0,0,260); gAc.addColorStop(0,'#66b8ff30'); gAc.addColorStop(1,'#66b8ff00');
+  const gCr = cit.createLinearGradient(0,0,0,260); gCr.addColorStop(0,'#ffd16630'); gCr.addColorStop(1,'#ffd16600');
+  const gOt = cit.createLinearGradient(0,0,0,260); gOt.addColorStop(0,'#9aaa9a30'); gOt.addColorStop(1,'#9aaa9a00');
+
+  charts['invType'] = new Chart(cit, {
+    type: 'line',
+    data: { labels, datasets: [
+      { label:'Acciones', data:acData, borderColor:'#66b8ff', backgroundColor:gAc, fill:true, borderWidth:2, tension:0.4, pointRadius:3, pointHoverRadius:6 },
+      { label:'Cripto',   data:crData, borderColor:'#ffd166', backgroundColor:gCr, fill:true, borderWidth:2, tension:0.4, pointRadius:3, pointHoverRadius:6 },
+      { label:'Otro',     data:otData, borderColor:'#9aaa9a', backgroundColor:gOt, fill:true, borderWidth:2, tension:0.4, pointRadius:3, pointHoverRadius:6 }
+    ]},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:true,labels:{color:'#6b7d6b',font:{size:10},boxWidth:10,padding:14}},
+        tooltip:{backgroundColor:'#131714',borderColor:'#1f241f',borderWidth:1,titleColor:'#6b7d6b',bodyColor:'#dde8dd',padding:10,
+          callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`}}
+      },
+      scales:{
+        x:{grid:{color:'#141814'},ticks:{color:'#343d34',maxTicksLimit:8}},
+        y:{grid:{color:'#141814'},ticks:{color:'#343d34',callback:v=>fmtK(v)}}
+      }
+    }
+  });
+
+  // Donut por tipo (último mes)
+  killChart('invTypeDist');
+  const lastE  = entries.length ? entries[entries.length-1] : null;
+  const acLast = lastE ? (lastE.invest||[]).filter(r=>r.type==='acciones').reduce((a,r)=>a+r.amount,0) : 0;
+  const crLast = lastE ? (lastE.invest||[]).filter(r=>r.type==='crypto').reduce((a,r)=>a+r.amount,0)   : 0;
+  const otLast = lastE ? (lastE.invest||[]).filter(r=>r.type==='otro'||!r.type).reduce((a,r)=>a+r.amount,0) : 0;
+  const cid = document.getElementById('cInvTypeDist').getContext('2d');
+  charts['invTypeDist'] = new Chart(cid, {
+    type: 'doughnut',
+    data: {
+      labels: ['Acciones','Cripto','Otro'],
+      datasets:[{
+        data: lastE ? [acLast,crLast,otLast] : [1,1,1],
+        backgroundColor: lastE ? ['rgba(102,184,255,.15)','rgba(255,209,102,.15)','rgba(154,170,154,.15)'] : ['#1f241f','#1f241f','#1f241f'],
+        borderColor:     lastE ? ['#66b8ff','#ffd166','#9aaa9a']                                          : ['#1f241f','#1f241f','#1f241f'],
+        borderWidth: 2
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'70%',
+      plugins:{
+        legend:{display:true,position:'bottom',labels:{color:'#6b7d6b',font:{size:10},boxWidth:10,padding:14}},
+        tooltip:{backgroundColor:'#131714',borderColor:'#1f241f',borderWidth:1,
+          callbacks:{label:ctx=>{
+            const tot=ctx.dataset.data.reduce((a,b)=>a+b,0);
+            const pct=tot?((ctx.parsed/tot)*100).toFixed(1):0;
+            return ` ${ctx.label}: ${fmt(ctx.parsed)} (${pct}%)`;
+          }}
+        }
+      }
+    }
+  });
+}
+
+// ── ASSETS TABLE ──────────────────────────────────────────────────────────
+function renderAssetsTable() {
+  const el    = document.getElementById('assetsTable');
+  const lastE = entries.length ? entries[entries.length-1] : null;
+  if (!lastE || !(lastE.invest||[]).length) {
+    el.innerHTML = '<span class="ico">📊</span>Sin datos aún'; el.className='empty'; return;
+  }
+  el.className = '';
+  const inv   = [...(lastE.invest||[])].sort((a,b)=>b.amount-a.amount);
+  const total = inv.reduce((a,r)=>a+r.amount,0);
+  const typeColors = {acciones:'#66b8ff', crypto:'#ffd166', otro:'#9aaa9a'};
+  const typeLabels = {acciones:'Acciones', crypto:'Cripto',  otro:'Otro'};
+  el.innerHTML = `
+    <table style="width:100%;border-collapse:collapse">
+      <thead><tr><th>Activo</th><th>Tipo</th><th>Entidad</th><th>Importe</th><th>% cartera</th></tr></thead>
+      <tbody>
+        ${inv.map(r => {
+          const col = typeColors[r.type]||'#9aaa9a';
+          const lbl = typeLabels[r.type]||'Otro';
+          const pct = total>0 ? ((r.amount/total)*100).toFixed(1) : 0;
+          return `<tr>
+            <td style="font-weight:500">${r.ticker||r.name||'—'}</td>
+            <td><span class="type-badge ${r.type||'otro'}">${lbl}</span></td>
+            <td style="color:var(--txt2)">${r.entity||'—'}</td>
+            <td style="color:${col}">${fmt(r.amount)}</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div style="flex:1;background:var(--surface);border-radius:4px;height:4px;overflow:hidden">
+                  <div style="width:${pct}%;height:100%;background:${col};border-radius:4px"></div>
+                </div>
+                <span style="color:var(--txt2);font-size:11px;width:36px;text-align:right">${pct}%</span>
+              </div>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+      <tfoot>
+        <tr style="border-top:1px solid var(--border2)">
+          <td colspan="3" style="padding:10px 14px;color:var(--txt3);font-size:10px;letter-spacing:1px">TOTAL INVERSIONES</td>
+          <td style="padding:10px 14px;color:var(--gold)">${fmt(total)}</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>`;
 }
 
 function renderProjection() {
@@ -974,58 +1202,69 @@ function renderProjection() {
   const rate    = Math.max(0.1, parseFloat(document.getElementById('projRate').value) || 8) / 100;
   const monthly = Math.max(0, parseFloat(document.getElementById('projMonthly').value) || 0);
 
-  // Starting capital = total savings from last entry
-  const last = entries.length ? entries[entries.length - 1] : null;
-  const capital = last ? (totS(last) + totI(last)) : 0;
+  // Starting capital = FIRST registered entry (projection starts from there)
+  const first = entries.length ? entries[0] : null;
+  const last  = entries.length ? entries[entries.length - 1] : null;
+  const capital = first ? (totS(first) + totI(first)) : 0;
 
-  // Build projection labels: from today month by month for `years` years
-  const now = new Date();
-  const projLabels = [];
-  const projSP     = [];   // S&P500 compound growth
-  const projSavings = [];  // real savings data (historic) then null
+  // Start date = first registered month
+  const startYear  = first ? first.year  : new Date().getFullYear();
+  const startMonth = first ? parseInt(first.month) - 1 : new Date().getMonth(); // 0-indexed
+
+  const projLabels  = [];
+  const projSP      = [];  // S&P500 compound growth from first entry
+  const projSavings = [];  // real capital data (past entries) then null
 
   const monthlyRate = Math.pow(1 + rate, 1/12) - 1;
   let spValue = capital;
 
-  // Map existing entries to year-month for quick lookup
+  // Map existing entries by key for quick lookup
   const entryMap = {};
   entries.forEach(e => { entryMap[`${e.year}-${e.month}`] = totS(e) + totI(e); });
 
-  const totalMonths = years * 12;
+  // Total months = historical months already recorded + future projection years
+  const now = new Date();
+  const nowYear  = now.getFullYear();
+  const nowMonth = now.getMonth(); // 0-indexed
+
+  // How many months from first entry to today
+  const historicMonths = (nowYear - startYear) * 12 + (nowMonth - startMonth);
+  const totalMonths    = historicMonths + years * 12;
 
   for (let m = 0; m <= totalMonths; m++) {
-    const d = new Date(now.getFullYear(), now.getMonth() + m, 1);
-    const yr  = d.getFullYear();
-    const mo  = String(d.getMonth() + 1).padStart(2, '0');
+    const d  = new Date(startYear, startMonth + m, 1);
+    const yr = d.getFullYear();
+    const mo = String(d.getMonth() + 1).padStart(2, '0');
 
-    // Label: show only Jan of each year to avoid clutter
+    // Label: show Jan of each year + the very first month
     if (m === 0 || d.getMonth() === 0) {
-      projLabels.push(`${yr}`);
+      projLabels.push(m === 0 ? `${mn(mo)} ${yr}` : `${yr}`);
     } else {
       projLabels.push('');
     }
 
-    // S&P projection: compound + monthly contribution
+    // S&P projection: compound monthly from the start
     if (m > 0) spValue = spValue * (1 + monthlyRate) + monthly;
     projSP.push(parseFloat(spValue.toFixed(2)));
 
-    // Real savings: only past/present entries
+    // Real capital: show recorded values, null if not recorded yet
     const key = `${yr}-${mo}`;
     projSavings.push(entryMap[key] !== undefined ? entryMap[key] : null);
   }
 
-  // Summary chips
-  const finalSP  = projSP[projSP.length - 1];
-  const totalContrib = capital + (monthly * totalMonths);
-  const ganancia = finalSP - totalContrib;
-  const pctGain  = totalContrib > 0 ? ((ganancia / totalContrib) * 100).toFixed(1) : 0;
+  // Summary chips — based on last recorded vs projection end
+  const finalSP      = projSP[projSP.length - 1];
+  const lastCapital  = last ? (totS(last) + totI(last)) : 0;
+  const totalContrib = lastCapital + (monthly * years * 12);
+  const ganancia     = finalSP - capital - (monthly * totalMonths);
+  const pctGain      = capital > 0 ? (((finalSP - capital) / capital) * 100).toFixed(1) : 0;
 
   document.getElementById('projSummary').innerHTML = `
     <div style="background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:8px;padding:8px 14px;font-size:11px;color:#ff6b6b">
-      Capital inicial <strong>${fmt(capital)}</strong>
+      Capital inicial (primer mes) <strong>${fmt(capital)}</strong>
     </div>
     <div style="background:rgba(102,184,255,.08);border:1px solid rgba(102,184,255,.2);border-radius:8px;padding:8px 14px;font-size:11px;color:#66b8ff">
-      Aportación total <strong>${fmt(totalContrib)}</strong>
+      Capital actual <strong>${fmt(lastCapital)}</strong>
     </div>
     <div style="background:rgba(77,255,124,.08);border:1px solid rgba(77,255,124,.2);border-radius:8px;padding:8px 14px;font-size:11px;color:#4dff7c">
       Proyección en ${years} años <strong>${fmt(finalSP)}</strong>
