@@ -175,6 +175,9 @@ tr:hover td{background:#0f1210}
 @media(max-width:480px){.gasto-row{grid-template-columns:1fr 100px auto}}
 
 /* invest rows: type + ticker/name + entity + amount + remove */
+.copy-prev-btn{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border2);color:var(--txt2);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;padding:8px 14px;border-radius:var(--rsm);cursor:pointer;transition:all .2s;margin-bottom:14px}
+.copy-prev-btn:hover{border-color:var(--green);color:var(--green)}
+.copy-prev-btn .ico{font-size:14px}
 .sav-row{display:grid;grid-template-columns:120px 1fr 130px auto;gap:8px;margin-bottom:10px;align-items:end}
 @media(max-width:620px){.sav-row{grid-template-columns:1fr 1fr}}
 .inv-row{display:grid;grid-template-columns:110px 1fr 1fr 120px auto;gap:8px;margin-bottom:10px;align-items:end}
@@ -199,7 +202,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <div class="hdr">
     <div>
       <h1>Mis <em>Finanzas</em></h1>
-      <div class="hdr-sub">Seguimiento personal · Local · <span style="color:var(--green)">v14</span></div>
+      <div class="hdr-sub">Seguimiento personal · Local · <span style="color:var(--green)">v15</span></div>
     </div>
     <div class="hdr-date" id="hdrDate"></div>
   </div>
@@ -340,6 +343,9 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <!-- INCOME form -->
     <div class="form-card">
       <h3>💚 Ingresos</h3>
+      <button class="copy-prev-btn" onclick="copyPrevBudget('income')" id="copyPrevIncomeBtn">
+        <span class="ico">📋</span> Copiar ingresos del mes anterior
+      </button>
       <div id="incomeDiv"></div>
       <button class="add-ent-btn" onclick="addBudgetRow('incomeDiv','income')">+ Añadir ingreso</button>
     </div>
@@ -347,6 +353,9 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <!-- EXPENSE form -->
     <div class="form-card">
       <h3>🔴 Gastos</h3>
+      <button class="copy-prev-btn" onclick="copyPrevBudget('expense')" id="copyPrevExpenseBtn">
+        <span class="ico">📋</span> Copiar gastos del mes anterior
+      </button>
       <div id="expenseDiv"></div>
       <button class="add-ent-btn" onclick="addBudgetRow('expenseDiv','expense')">+ Añadir gasto</button>
     </div>
@@ -415,6 +424,9 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
         <div style="font-size:10px;color:var(--txt3);margin-bottom:12px;line-height:1.7">
           Añade cada cuenta con su tipo, entidad y saldo actual.
         </div>
+        <button class="copy-prev-btn" onclick="copyPrevSavings()" id="copyPrevSavBtn">
+          <span class="ico">📋</span> Copiar ahorros del mes anterior
+        </button>
         <div id="savDiv"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
           <button class="add-ent-btn" style="flex:1;min-width:140px" onclick="addSavRow('savDiv','cuenta_corriente')">+ Cuenta Corriente</button>
@@ -433,6 +445,9 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
         <div style="font-size:10px;color:var(--txt3);margin-bottom:12px;line-height:1.7">
           Añade cada posición con su tipo (acción, cripto…), nombre del activo, entidad donde está y el importe actual.
         </div>
+        <button class="copy-prev-btn" onclick="copyPrevInvest()" id="copyPrevInvBtn">
+          <span class="ico">📋</span> Copiar inversiones del mes anterior
+        </button>
         <div id="invDiv"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
           <button class="add-ent-btn" style="flex:1;min-width:140px" onclick="addInvRow('invDiv','acciones')">+ Acción</button>
@@ -1747,6 +1762,62 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('bMonth').addEventListener('change', renderBudgetSummary);
   document.getElementById('bYear').addEventListener('change',  renderBudgetSummary);
 });
+
+// ── COPY PREVIOUS MONTH ──────────────────────────────────────────────────
+
+function getPrevEntry() {
+  // Get the entry that corresponds to the month before the currently selected month in the form
+  const month = document.getElementById('inMonth').value;
+  const year  = parseInt(document.getElementById('inYear').value) || new Date().getFullYear();
+  const d     = new Date(year, parseInt(month) - 1, 1);
+  d.setMonth(d.getMonth() - 1);
+  const prevKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  return entries.find(e => e.key === prevKey) || (entries.length ? entries[entries.length-1] : null);
+}
+
+function getPrevBudget() {
+  const month = document.getElementById('bMonth').value;
+  const year  = parseInt(document.getElementById('bYear').value) || new Date().getFullYear();
+  const d     = new Date(year, parseInt(month) - 1, 1);
+  d.setMonth(d.getMonth() - 1);
+  const prevKey = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  return budgets.find(b => b.key === prevKey) || (budgets.length ? budgets[budgets.length-1] : null);
+}
+
+function copyPrevSavings() {
+  const prev = getPrevEntry();
+  if (!prev || !(prev.savings||[]).length) { toast('No hay ahorros del mes anterior', 1); return; }
+  document.getElementById('savDiv').innerHTML = '';
+  prev.savings.forEach(r => addSavRow('savDiv', r.type||'otro', r.entity||r.name||'', r.amount));
+  toast(`Ahorros copiados de ${mn(prev.month)} ${prev.year} — edítalos antes de guardar`);
+  updPrev();
+}
+
+function copyPrevInvest() {
+  const prev = getPrevEntry();
+  if (!prev || !(prev.invest||[]).length) { toast('No hay inversiones del mes anterior', 1); return; }
+  document.getElementById('invDiv').innerHTML = '';
+  prev.invest.forEach(r => addInvRow('invDiv', r.type||'otro', r.ticker||r.name||'', r.entity||'', r.amount));
+  toast(`Inversiones copiadas de ${mn(prev.month)} ${prev.year} — edítalas antes de guardar`);
+  updPrev();
+}
+
+function copyPrevBudget(type) {
+  const prev = getPrevBudget();
+  if (!prev) { toast('No hay presupuesto del mes anterior', 1); return; }
+  if (type === 'income') {
+    if (!(prev.income||[]).length) { toast('No hay ingresos del mes anterior', 1); return; }
+    document.getElementById('incomeDiv').innerHTML = '';
+    prev.income.forEach(r => addBudgetRow('incomeDiv', 'income', r.name, r.amount));
+    toast(`Ingresos copiados de ${mn(prev.month)} ${prev.year} — edítalos antes de guardar`);
+  } else {
+    if (!(prev.expense||[]).length) { toast('No hay gastos del mes anterior', 1); return; }
+    document.getElementById('expenseDiv').innerHTML = '';
+    prev.expense.forEach(r => addBudgetRow('expenseDiv', 'expense', r.name, r.amount));
+    toast(`Gastos copiados de ${mn(prev.month)} ${prev.year} — edítalos antes de guardar`);
+  }
+  updBPrev();
+}
 
 // ── EXPORT / IMPORT ───────────────────────────────────────────────────────
 function exportData() {
