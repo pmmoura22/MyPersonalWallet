@@ -219,6 +219,55 @@ tr:hover td{background:#0f1210}
 .inv-type-crypto{color:#ffd166}
 .inv-type-otro{color:#9aaa9a}
 
+
+/* ── DEUDAS ── */
+.debt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:560px){.debt-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:360px){.debt-grid{grid-template-columns:1fr}}
+.dcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.dcard::after{content:'';position:absolute;top:0;left:0;right:0;height:1px}
+.dcard.total::after{background:linear-gradient(90deg,var(--red),transparent)}
+.dcard.interest::after{background:linear-gradient(90deg,var(--gold),transparent)}
+.dcard.monthly::after{background:linear-gradient(90deg,var(--blue),transparent)}
+.dcard-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--txt3);margin-bottom:8px}
+.dcard-val{font-family:'Playfair Display',serif;font-size:clamp(16px,3.5vw,22px);font-weight:500;line-height:1}
+.dcard.total .dcard-val{color:var(--red)}
+.dcard.interest .dcard-val{color:var(--gold)}
+.dcard.monthly .dcard-val{color:var(--blue)}
+.dcard-sub{font-size:10px;color:var(--txt3);margin-top:5px}
+.debt-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:12px}
+.debt-item-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.debt-item-title{display:flex;flex-direction:column;gap:4px}
+.debt-item-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;color:var(--txt1)}
+.debt-item-meta{font-size:10px;color:var(--txt2);letter-spacing:0.5px}
+.debt-item-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.debt-progress-wrap{margin-bottom:10px}
+.debt-progress-bar{background:var(--surface);border-radius:100px;height:6px;overflow:hidden;margin:6px 0 4px}
+.debt-progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .5s ease}
+.debt-progress-fill.high{background:linear-gradient(90deg,var(--gold),var(--red))}
+.debt-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+@media(max-width:500px){.debt-stats{grid-template-columns:repeat(2,1fr)}}
+.debt-stat{background:var(--surface);border-radius:var(--rsm);padding:10px;text-align:center}
+.debt-stat-val{font-size:13px;font-weight:500;color:var(--txt1);margin-bottom:2px}
+.debt-stat-lbl{font-size:9px;color:var(--txt3);letter-spacing:1px;text-transform:uppercase}
+.debt-type-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;letter-spacing:1px;text-transform:uppercase}
+.debt-type-hipoteca{background:rgba(255,107,107,.12);color:var(--red)}
+.debt-type-coche{background:rgba(102,184,255,.12);color:var(--blue)}
+.debt-type-personal{background:rgba(255,209,102,.12);color:var(--gold)}
+.debt-type-tarjeta{background:rgba(255,107,107,.18);color:#ff9999}
+.debt-type-otro{background:rgba(154,170,154,.12);color:#9aaa9a}
+.amort-wrap{display:none;margin-top:14px;border-top:1px solid var(--border);padding-top:14px}
+.amort-wrap.open{display:block}
+/* Mobile-friendly amort: cards on small screens, table on large */
+.amort-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:340px;overflow-y:auto;border-radius:var(--rsm);border:1px solid var(--border)}
+.amort-table-wrap table{min-width:360px;font-size:11px}
+.amort-table-wrap th{padding:7px 10px;font-size:8px;position:sticky;top:0;background:var(--card);z-index:1}
+.amort-table-wrap td{padding:7px 10px}
+.amort-toggle-btn{display:flex;align-items:center;gap:6px;background:transparent;border:1px solid var(--border2);color:var(--txt2);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:6px 12px;border-radius:var(--rsm);cursor:pointer;transition:all .2s}
+.amort-toggle-btn:hover{border-color:var(--blue);color:var(--blue)}
+.amort-toggle-btn.active{border-color:var(--blue);color:var(--blue);background:rgba(102,184,255,.08)}
+.amort-toggle-btn .arrow{display:inline-block;transition:transform .2s;font-style:normal}
+.amort-toggle-btn.active .arrow{transform:rotate(180deg)}
 ::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
@@ -231,7 +280,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <div class="hdr">
     <div>
       <h1>Mis <em>Finanzas</em></h1>
-      <div class="hdr-sub">Seguimiento personal · Local · <span style="color:var(--green)">v18</span></div>
+      <div class="hdr-sub">Seguimiento personal · Local · <span style="color:var(--green)">v22</span></div>
     </div>
     <div class="hdr-date" id="hdrDate"></div>
   </div>
@@ -264,6 +313,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <button class="tab" onclick="showSec('add')">Registrar</button>
     <button class="tab" onclick="showSec('history')">Historial</button>
     <button class="tab" onclick="showSec('retire')">Jubilación</button>
+    <button class="tab" onclick="showSec('debts')">Deudas</button>
     <button class="tab" onclick="showSec('settings')">Opciones</button>
   </div>
 
@@ -645,6 +695,79 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 
   </div>
 
+  <!-- ═══ DEUDAS ═══ -->
+  <div class="sec" id="sec-debts">
+
+    <!-- Summary cards -->
+    <div class="debt-grid">
+      <div class="dcard total">
+        <div class="dcard-lbl">Deuda total pendiente</div>
+        <div class="dcard-val" id="dTotalPending">—</div>
+        <div class="dcard-sub" id="dTotalSub"></div>
+      </div>
+      <div class="dcard interest">
+        <div class="dcard-lbl">Intereses totales a pagar</div>
+        <div class="dcard-val" id="dTotalInterest">—</div>
+        <div class="dcard-sub" id="dInterestSub"></div>
+      </div>
+      <div class="dcard monthly">
+        <div class="dcard-lbl">Cuota mensual total</div>
+        <div class="dcard-val" id="dTotalMonthly">—</div>
+        <div class="dcard-sub" id="dMonthlySub"></div>
+      </div>
+    </div>
+
+    <!-- Debt overview chart -->
+    <div class="chart-card" id="dChartCard" style="display:none">
+      <h3>Evolución de deudas</h3>
+      <div class="chart-wrap" style="height:260px"><canvas id="cDebts"></canvas></div>
+    </div>
+
+    <!-- Add debt form -->
+    <div class="form-card">
+      <h3>Añadir nueva deuda</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="dName" placeholder="Ej: Hipoteca BBVA...">
+        </div>
+        <div class="field">
+          <label>Tipo</label>
+          <select id="dType">
+            <option value="hipoteca">🏠 Hipoteca</option>
+            <option value="coche">🚗 Coche</option>
+            <option value="personal">👤 Préstamo personal</option>
+            <option value="tarjeta">💳 Tarjeta de crédito</option>
+            <option value="otro">📦 Otro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Capital inicial</label>
+          <input type="number" id="dOriginal" placeholder="0.00" min="0" step="100" oninput="calcDebtPreview()">
+        </div>
+        <div class="field">
+          <label>Capital pendiente</label>
+          <input type="number" id="dPending" placeholder="0.00" min="0" step="100" oninput="calcDebtPreview()">
+        </div>
+        <div class="field">
+          <label>Tipo de interés anual %</label>
+          <input type="number" id="dRate" placeholder="3.5" min="0" max="100" step="0.1" oninput="calcDebtPreview()">
+        </div>
+        <div class="field">
+          <label>Cuota mensual</label>
+          <input type="number" id="dMonthly" placeholder="0.00" min="0" step="10" oninput="calcDebtPreview()">
+        </div>
+      </div>
+      <!-- Preview -->
+      <div id="dPreview" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--rsm);padding:12px 16px;margin-bottom:14px;font-size:11px;color:var(--txt2);line-height:2"></div>
+      <button class="btn btn-primary" onclick="addDebt()">＋ Añadir deuda</button>
+    </div>
+
+    <!-- Debt list -->
+    <div id="debtList"></div>
+
+  </div>
+
   <!-- ═══ OPCIONES ═══ -->
   <div class="sec" id="sec-settings">
 
@@ -745,6 +868,7 @@ function init() {
   renderAll();
   renderEntityChips();
   calcRetire();
+  initDebts();
 }
 
 // ── PERSIST ───────────────────────────────────────────────────────────────
@@ -757,7 +881,7 @@ function showSec(n) {
   document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('sec-'+n).classList.add('active');
-  document.querySelectorAll('.tab')[{overview:0,budget:1,add:2,history:3,retire:4,settings:5}[n]].classList.add('active');
+  document.querySelectorAll('.tab')[{overview:0,budget:1,add:2,history:3,retire:4,debts:5,settings:6}[n]].classList.add('active');
   if (n === 'overview') renderCharts();
 }
 
@@ -1929,6 +2053,397 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ══════════════════════════════════════════════════════════════════════════
+// SEGUIMIENTO DE DEUDAS
+// ══════════════════════════════════════════════════════════════════════════
+
+const DK = 'mf_debts_v1';
+let debts = [];  // [{id, name, type, original, pending, rate, monthly, addedAt}]
+
+/** Load debts from localStorage */
+function loadDebts() {
+  try { const r = localStorage.getItem(DK); if (r) debts = JSON.parse(r); } catch(e) {}
+}
+
+/** Persist debts to localStorage */
+function saveDebts() { localStorage.setItem(DK, JSON.stringify(debts)); }
+
+/** Initialize debt section */
+function initDebts() {
+  loadDebts();
+  renderDebtSummary();
+  renderDebtList();
+  renderDebtChart();
+}
+
+// ── PREVIEW WHILE FILLING THE FORM ───────────────────────────────────────
+/** Shows a live preview of payoff months and total interest while the user fills the form */
+function calcDebtPreview() {
+  const pending = parseFloat(document.getElementById('dPending').value) || 0;
+  const rate    = parseFloat(document.getElementById('dRate').value)    || 0;
+  const monthly = parseFloat(document.getElementById('dMonthly').value) || 0;
+  const prev    = document.getElementById('dPreview');
+
+  if (!pending || !monthly) { prev.style.display = 'none'; return; }
+
+  const { months, totalInterest } = calcPayoff(pending, rate, monthly);
+  const years  = Math.floor(months / 12);
+  const rem    = months % 12;
+  const timeStr = years > 0
+    ? `${years} año${years !== 1 ? 's' : ''}${rem > 0 ? ` y ${rem} mes${rem !== 1 ? 'es' : ''}` : ''}`
+    : `${months} mes${months !== 1 ? 'es' : ''}`;
+
+  prev.style.display = 'block';
+  prev.innerHTML = `
+    ⏱ Tiempo hasta liquidar: <strong style="color:var(--txt1)">${timeStr}</strong> &nbsp;·&nbsp;
+    💸 Intereses totales: <strong style="color:var(--gold)">${fmt(totalInterest)}</strong> &nbsp;·&nbsp;
+    📊 Coste total: <strong style="color:var(--txt1)">${fmt(pending + totalInterest)}</strong>
+  `;
+}
+
+// ── CORE PAYOFF CALCULATOR ────────────────────────────────────────────────
+/**
+ * Calculates months to pay off a debt and total interest paid.
+ * Uses standard amortization: each month interest is applied first, then principal.
+ * @param {number} pending  - Remaining balance
+ * @param {number} annualRate - Annual interest rate (%)
+ * @param {number} monthly  - Fixed monthly payment
+ * @returns {{ months, totalInterest, schedule }}
+ */
+function calcPayoff(pending, annualRate, monthly) {
+  const r = annualRate / 100 / 12;  // monthly interest rate
+  let balance = pending;
+  let totalInterest = 0;
+  let months = 0;
+  const schedule = [];
+
+  // Guard: if payment doesn't cover interest, it'll never be paid off
+  const minPayment = balance * r;
+  if (monthly <= minPayment && annualRate > 0) {
+    return { months: Infinity, totalInterest: Infinity, schedule: [] };
+  }
+
+  while (balance > 0.01 && months < 600) {
+    const interestCharge = balance * r;
+    const principalCharge = Math.min(monthly - interestCharge, balance);
+    totalInterest += interestCharge;
+    balance -= principalCharge;
+    months++;
+    schedule.push({
+      month: months,
+      payment: parseFloat((interestCharge + principalCharge).toFixed(2)),
+      principal: parseFloat(principalCharge.toFixed(2)),
+      interest: parseFloat(interestCharge.toFixed(2)),
+      balance: parseFloat(Math.max(0, balance).toFixed(2))
+    });
+  }
+
+  return { months, totalInterest: parseFloat(totalInterest.toFixed(2)), schedule };
+}
+
+// ── ADD DEBT ──────────────────────────────────────────────────────────────
+function addDebt() {
+  const name     = document.getElementById('dName').value.trim();
+  const type     = document.getElementById('dType').value;
+  const original = parseFloat(document.getElementById('dOriginal').value) || 0;
+  const pending  = parseFloat(document.getElementById('dPending').value)  || 0;
+  const rate     = parseFloat(document.getElementById('dRate').value)     || 0;
+  const monthly  = parseFloat(document.getElementById('dMonthly').value)  || 0;
+
+  if (!name)    { toast('Introduce un nombre para la deuda', 1); return; }
+  if (!pending) { toast('Introduce el capital pendiente', 1); return; }
+  if (!monthly) { toast('Introduce la cuota mensual', 1); return; }
+
+  const { months } = calcPayoff(pending, rate, monthly);
+  if (months === Infinity) {
+    toast('La cuota mensual no cubre los intereses — auméntala', 1); return;
+  }
+
+  debts.push({
+    id: Date.now().toString(),
+    name, type,
+    original: original || pending,
+    pending, rate, monthly,
+    addedAt: new Date().toISOString()
+  });
+
+  saveDebts();
+
+  // Clear form
+  ['dName','dOriginal','dPending','dRate','dMonthly'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('dPreview').style.display = 'none';
+
+  renderDebtSummary();
+  renderDebtList();
+  renderDebtChart();
+  toast('Deuda añadida ✓');
+}
+
+// ── DELETE DEBT ───────────────────────────────────────────────────────────
+function deleteDebt(id) {
+  if (!confirm('¿Eliminar esta deuda?')) return;
+  debts = debts.filter(d => d.id !== id);
+  saveDebts();
+  renderDebtSummary();
+  renderDebtList();
+  renderDebtChart();
+  toast('Deuda eliminada');
+}
+
+// ── SUMMARY CARDS ─────────────────────────────────────────────────────────
+function renderDebtSummary() {
+  if (!debts.length) {
+    document.getElementById('dTotalPending').textContent  = fmt(0);
+    document.getElementById('dTotalInterest').textContent = fmt(0);
+    document.getElementById('dTotalMonthly').textContent  = fmt(0);
+    document.getElementById('dTotalSub').textContent      = 'Sin deudas registradas';
+    document.getElementById('dInterestSub').textContent   = '';
+    document.getElementById('dMonthlySub').textContent    = '';
+    return;
+  }
+
+  const totalPending  = debts.reduce((a, d) => a + d.pending, 0);
+  const totalMonthly  = debts.reduce((a, d) => a + d.monthly, 0);
+  let   totalInterest = 0;
+  let   maxMonths     = 0;
+
+  debts.forEach(d => {
+    const { months, totalInterest: ti } = calcPayoff(d.pending, d.rate, d.monthly);
+    totalInterest += ti;
+    if (months !== Infinity) maxMonths = Math.max(maxMonths, months);
+  });
+
+  const payoffYears = Math.floor(maxMonths / 12);
+  const payoffMo    = maxMonths % 12;
+  const payoffStr   = payoffYears > 0
+    ? `${payoffYears} año${payoffYears!==1?'s':''} y ${payoffMo} mes${payoffMo!==1?'es':''}`
+    : `${maxMonths} meses`;
+
+  document.getElementById('dTotalPending').textContent  = fmt(totalPending);
+  document.getElementById('dTotalInterest').textContent = fmt(totalInterest);
+  document.getElementById('dTotalMonthly').textContent  = fmt(totalMonthly);
+  document.getElementById('dTotalSub').textContent      = `${debts.length} deuda${debts.length!==1?'s':''}`;
+  document.getElementById('dInterestSub').textContent   = `${fmt(totalPending + totalInterest)} coste total`;
+  document.getElementById('dMonthlySub').textContent    = `Libre de deudas en ${payoffStr}`;
+}
+
+// ── DEBT LIST ─────────────────────────────────────────────────────────────
+function renderDebtList() {
+  const el = document.getElementById('debtList');
+  if (!debts.length) {
+    el.innerHTML = `<div class="empty"><span class="ico">🎉</span>Sin deudas registradas</div>`;
+    return;
+  }
+
+  const typeLabels = {hipoteca:'Hipoteca',coche:'Coche',personal:'Préstamo personal',tarjeta:'Tarjeta',otro:'Otro'};
+  const typeIcons  = {hipoteca:'🏠',coche:'🚗',personal:'👤',tarjeta:'💳',otro:'📦'};
+
+  el.innerHTML = debts.map(d => {
+    const { months, totalInterest, schedule } = calcPayoff(d.pending, d.rate, d.monthly);
+    const paidPct  = d.original > 0 ? Math.min(100, ((d.original - d.pending) / d.original) * 100) : 0;
+    const years    = Math.floor(months / 12);
+    const remMo    = months % 12;
+    const timeStr  = months === Infinity ? '∞'
+      : years > 0 ? `${years}a ${remMo}m` : `${months}m`;
+    const payoffDate = months !== Infinity
+      ? new Date(Date.now() + months * 30.4 * 24 * 3600 * 1000).toLocaleDateString('es-ES', {month:'short', year:'numeric'})
+      : '—';
+    const isHigh = paidPct < 25;
+
+    // Build inline amortization table rows
+    const step = schedule.length > 120 ? 6 : schedule.length > 60 ? 3 : 1;
+    const rows = schedule.filter((r, i) => i % step === 0 || i === schedule.length - 1);
+    const amortRows = rows.map(r => `
+      <tr>
+        <td style="color:var(--txt3)">${r.month}</td>
+        <td>${fmt(r.payment)}</td>
+        <td class="cs">${fmt(r.principal)}</td>
+        <td style="color:var(--gold)">${fmt(r.interest)}</td>
+        <td style="color:${r.balance < d.pending * 0.1 ? 'var(--green)' : 'var(--txt1)'}">${fmt(r.balance)}</td>
+      </tr>`).join('');
+
+    return `<div class="debt-item">
+      <div class="debt-item-header">
+        <div class="debt-item-title">
+          <div class="debt-item-name">${typeIcons[d.type]||'📦'} ${d.name}</div>
+          <div class="debt-item-meta">
+            <span class="debt-type-tag debt-type-${d.type}">${typeLabels[d.type]||'Otro'}</span>
+            &nbsp;·&nbsp; ${d.rate}% TAE &nbsp;·&nbsp; ${fmt(d.monthly)}/mes
+          </div>
+        </div>
+        <div class="debt-item-actions">
+          <button class="amort-toggle-btn" id="amortBtn_${d.id}" onclick="toggleAmort('${d.id}')">
+            <span>Amortización</span><em class="arrow">▾</em>
+          </button>
+          <button class="btn btn-danger" onclick="deleteDebt('${d.id}')">✕</button>
+        </div>
+      </div>
+
+      <div class="debt-progress-wrap">
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--txt3);margin-bottom:4px">
+          <span>Pagado: ${fmt(d.original - d.pending)} (${paidPct.toFixed(1)}%)</span>
+          <span>Pendiente: <strong style="color:var(--red)">${fmt(d.pending)}</strong></span>
+        </div>
+        <div class="debt-progress-bar">
+          <div class="debt-progress-fill${isHigh?' high':''}" style="width:${paidPct}%"></div>
+        </div>
+      </div>
+
+      <div class="debt-stats">
+        <div class="debt-stat">
+          <div class="debt-stat-val" style="color:var(--gold)">${fmt(totalInterest)}</div>
+          <div class="debt-stat-lbl">Intereses restantes</div>
+        </div>
+        <div class="debt-stat">
+          <div class="debt-stat-val" style="color:var(--txt1)">${fmt(d.pending + totalInterest)}</div>
+          <div class="debt-stat-lbl">Coste total restante</div>
+        </div>
+        <div class="debt-stat">
+          <div class="debt-stat-val" style="color:var(--blue)">${timeStr}</div>
+          <div class="debt-stat-lbl">Tiempo restante</div>
+        </div>
+        <div class="debt-stat">
+          <div class="debt-stat-val" style="color:var(--green)">${payoffDate}</div>
+          <div class="debt-stat-lbl">Fecha estimada fin</div>
+        </div>
+      </div>
+
+      <!-- Inline amortization table (collapsible) -->
+      <div class="amort-wrap" id="amortWrap_${d.id}">
+        <div style="font-size:10px;color:var(--txt3);margin-bottom:10px;letter-spacing:1px">
+          ${schedule.length} cuotas${step > 1 ? ` · mostrando cada ${step}` : ''} · scroll vertical para ver todas
+        </div>
+        <div class="amort-table-wrap">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr>
+                <th>#</th><th>Cuota</th><th>Capital</th><th>Interés</th><th>Pendiente</th>
+              </tr>
+            </thead>
+            <tbody>${amortRows}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── AMORTIZATION TABLE ────────────────────────────────────────────────────
+/** Shows the full month-by-month amortization table for a given debt */
+/** Toggles the inline amortization table for a given debt card */
+function toggleAmort(id) {
+  const wrap = document.getElementById('amortWrap_' + id);
+  const btn  = document.getElementById('amortBtn_' + id);
+  if (!wrap || !btn) return;
+
+  const isOpen = wrap.classList.contains('open');
+  wrap.classList.toggle('open', !isOpen);
+  btn.classList.toggle('active', !isOpen);
+}
+
+// ── DEBT CHART ────────────────────────────────────────────────────────────
+/** Renders a multi-line chart showing how each debt balance decreases over time */
+function renderDebtChart() {
+  killChart('debts');
+  const card = document.getElementById('dChartCard');
+
+  if (!debts.length) { card.style.display = 'none'; return; }
+  card.style.display = 'block';
+
+  // Find max months across all debts
+  const maxMo = debts.reduce((mx, d) => {
+    const { months } = calcPayoff(d.pending, d.rate, d.monthly);
+    return months !== Infinity ? Math.max(mx, months) : mx;
+  }, 0);
+
+  if (maxMo === 0) return;
+
+  // Build monthly labels (show every 12 months)
+  const labels = [];
+  for (let m = 0; m <= maxMo; m++) {
+    const d = new Date();
+    d.setMonth(d.getMonth() + m);
+    labels.push(m % 12 === 0 ? d.toLocaleDateString('es-ES', {month:'short',year:'numeric'}) : '');
+  }
+
+  // Color palette for multiple debts
+  const colors = ['#ff6b6b','#66b8ff','#ffd166','#4dff7c','#ff9f43','#a29bfe','#fd79a8'];
+
+  const datasets = debts.map((d, i) => {
+    const { schedule } = calcPayoff(d.pending, d.rate, d.monthly);
+    const data = [];
+    for (let m = 0; m <= maxMo; m++) {
+      if (m === 0) { data.push(d.pending); continue; }
+      data.push(m <= schedule.length ? schedule[m-1].balance : 0);
+    }
+    const col = colors[i % colors.length];
+    return {
+      label: d.name,
+      data,
+      borderColor: col,
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      tension: 0.3,
+      pointRadius: 0,
+      pointHoverRadius: 5
+    };
+  });
+
+  // Total debt line
+  const totalData = [];
+  for (let m = 0; m <= maxMo; m++) {
+    let sum = 0;
+    debts.forEach((d, i) => {
+      const s = datasets[i].data[m];
+      sum += s || 0;
+    });
+    totalData.push(sum);
+  }
+
+  const cc = document.getElementById('cDebts').getContext('2d');
+  const gT = cc.createLinearGradient(0,0,0,260); gT.addColorStop(0,'#ff6b6b20'); gT.addColorStop(1,'#ff6b6b00');
+
+  charts['debts'] = new Chart(cc, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Deuda total',
+          data: totalData,
+          borderColor: '#ff6b6b',
+          backgroundColor: gT,
+          fill: true,
+          borderWidth: 2.5,
+          tension: 0.3,
+          pointRadius: 0,
+          pointHoverRadius: 6,
+          borderDash: []
+        },
+        ...datasets.map(ds => ({ ...ds, borderDash: [4,3] }))
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: true, labels: { color: '#6b7d6b', font: { size: 10 }, boxWidth: 10, padding: 12 } },
+        tooltip: {
+          backgroundColor: '#131714', borderColor: '#1f241f', borderWidth: 1,
+          titleColor: '#6b7d6b', bodyColor: '#dde8dd', padding: 10,
+          filter: item => item.parsed.y > 0,
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}` }
+        }
+      },
+      scales: {
+        x: { grid: { color: '#141814' }, ticks: { color: '#343d34', maxTicksLimit: 10, maxRotation: 0 } },
+        y: { grid: { color: '#141814' }, ticks: { color: '#343d34', callback: v => fmtK(v) }, min: 0 }
+      }
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
 // SIMULADOR DE JUBILACIÓN
 // ══════════════════════════════════════════════════════════════════════════
 
@@ -2052,15 +2567,22 @@ function calcRetire() {
     vTitle.textContent = '⚠️ Tu plan necesita ajustes';
     const gap = capitalNeeded - finalWealth;
 
-    // Calculate extra monthly savings needed to close the gap using FV of annuity formula:
-    // FV = PMT * ((1+r)^n - 1) / r  →  PMT = FV * r / ((1+r)^n - 1)
-    // where r = monthly rate, n = months until retirement
-    const monthlyRate  = Math.pow(1 + annualRate, 1/12) - 1;
-    const months       = years * 12;
-    const extraMonthly = months > 0 && monthlyRate > 0
-      ? gap * monthlyRate / (Math.pow(1 + monthlyRate, months) - 1)
-      : months > 0 ? gap / months   // fallback if rate is 0
-      : 0;
+    // Use the same annual simulation logic as the main projection
+    // to find exactly how much extra monthly savings closes the gap.
+    // We binary-search the monthly savings amount that hits capitalNeeded.
+    // This guarantees consistency with the chart and avoids formula/simulation mismatch.
+    let lo = 0, hi = capitalNeeded / 12, extraMonthly = 0;
+    for (let iter = 0; iter < 60; iter++) {
+      const mid = (lo + hi) / 2;
+      let w = patrimony;
+      const testAnnual = (monthlySave + mid) * 12;
+      for (let y = 0; y < years; y++) {
+        w = w * (1 + annualRate) + testAnnual;
+      }
+      if (w < capitalNeeded) lo = mid;
+      else hi = mid;
+    }
+    extraMonthly = Math.max(0, (lo + hi) / 2);
 
     // Also calculate how many extra years needed with current savings
     // FV = P*(1+r)^n + PMT*((1+r)^n-1)/r = capitalNeeded, solve for n numerically
@@ -2263,7 +2785,7 @@ function copyPrevBudget(type) {
 
 // ── EXPORT / IMPORT ───────────────────────────────────────────────────────
 function exportData() {
-  const b = new Blob([JSON.stringify({ entries, currency, entities, budgets, catIncome, catExpense, exportedAt: new Date().toISOString() }, null, 2)], { type:'application/json' });
+  const b = new Blob([JSON.stringify({ entries, currency, entities, budgets, catIncome, catExpense, debts, exportedAt: new Date().toISOString() }, null, 2)], { type:'application/json' });
   const u = URL.createObjectURL(b), a = document.createElement('a');
   a.href = u; a.download = `mis-finanzas-${new Date().toISOString().slice(0,10)}.json`;
   a.click(); URL.revokeObjectURL(u); toast('Datos exportados ✓');
@@ -2283,6 +2805,7 @@ function importData(ev) {
         if (d.budgets && Array.isArray(d.budgets)) { budgets = d.budgets; saveBudgets(); }
         if (d.catIncome)  { catIncome  = d.catIncome;  saveCatIncome();  renderCatChips('income');  }
         if (d.catExpense) { catExpense = d.catExpense; saveCatExpense(); renderCatChips('expense'); }
+        if (d.debts && Array.isArray(d.debts)) { debts = d.debts; saveDebts(); renderDebtSummary(); renderDebtList(); renderDebtChart(); }
         saveEntries(); renderAll(); toast('Datos importados ✓');
       } else toast('Archivo inválido', 1);
     } catch { toast('Error al leer el archivo', 1); }
@@ -2292,7 +2815,7 @@ function importData(ev) {
 
 function clearAll() {
   if (!confirm('¿Borrar TODOS los datos? No se puede deshacer.\n\nLas entidades y categorías no se eliminarán.')) return;
-  entries = []; budgets = []; saveEntries(); saveBudgets(); renderAll(); renderBudgetHistory(); renderBudgetChart(); toast('Datos eliminados');
+  entries = []; budgets = []; debts = []; saveEntries(); saveBudgets(); saveDebts(); renderAll(); renderBudgetHistory(); renderBudgetChart(); renderDebtSummary(); renderDebtList(); renderDebtChart(); toast('Datos eliminados');
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────────────
